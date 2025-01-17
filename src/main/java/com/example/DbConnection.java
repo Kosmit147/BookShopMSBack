@@ -1,11 +1,13 @@
 package com.example;
 
 import com.example.dto.BookDto;
+import com.example.dto.UserDto;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 
 public class DbConnection {
@@ -17,6 +19,14 @@ public class DbConnection {
         connection = DriverManager.getConnection(url);
         System.out.println("Connected to database.");
         createTables();
+    }
+
+    public void close() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
     }
 
     public void addBook(BookDto book) throws SQLException {
@@ -33,16 +43,37 @@ public class DbConnection {
         stmt.executeUpdate();
     }
 
-    public void close() {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            System.out.println(e.toString());
-        }
+    public void addUser(UserDto user) throws SQLException {
+        int roleId = getRoleId(user.roleName);
+
+        String addBook = """
+                INSERT INTO users(name, email, password, role_id) VALUES(?, ?, ?, ?);
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(addBook);
+
+        stmt.setString(1, user.name);
+        stmt.setString(2, user.email);
+        stmt.setString(3, user.password);
+        stmt.setInt(4, roleId);
+
+        stmt.executeUpdate();
+    }
+
+    public int getRoleId(String roleName) throws SQLException {
+        String selectRole = """
+                SELECT id FROM roles WHERE name == ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(selectRole);
+        stmt.setString(1, roleName);
+        ResultSet rs = stmt.executeQuery();
+        return rs.getInt("id");
     }
 
     private void createTables() throws SQLException {
         Statement stmt = connection.createStatement();
+        stmt.execute("PRAGMA foreign_keys = ON;");
 
         String createBooks = """
                 CREATE TABLE IF NOT EXISTS books (
@@ -73,6 +104,8 @@ public class DbConnection {
                     role_id INTEGER NOT NULL,
                 
                     FOREIGN KEY (role_id) REFERENCES roles(id)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
                 );
                 """;
 
@@ -84,6 +117,8 @@ public class DbConnection {
                     user_id INTEGER NOT NULL,
                 
                     FOREIGN KEY (user_id) REFERENCES users(id)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
                 );
                 """;
 
@@ -95,8 +130,13 @@ public class DbConnection {
                     book_id INTEGER NOT NULL,
                     order_id INTEGER NOT NULL,
                 
-                    FOREIGN KEY (book_id) REFERENCES books(id),
+                    FOREIGN KEY (book_id) REFERENCES books(id)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
+                
                     FOREIGN KEY (order_id) REFERENCES orders(id)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
                 );
                 """;
 
