@@ -39,7 +39,7 @@ public class DbConnection {
     private void createTables() throws SQLException {
         Statement stmt = connection.createStatement();
 
-        String createTableQuery = """
+        String createBooks = """
                 CREATE TABLE IF NOT EXISTS books (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     title TEXT NOT NULL,
@@ -48,6 +48,53 @@ public class DbConnection {
                 );
                 """;
 
-        stmt.execute(createTableQuery);
+        stmt.execute(createBooks);
+
+        String createRoles = """
+                CREATE TABLE IF NOT EXISTS roles (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT UNIQUE NOT NULL
+                );
+                """;
+
+        stmt.execute(createRoles);
+
+        String createUsers = """
+                CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    email TEXT UNIQUE NOT NULL,
+                    password TEXT NOT NULL,
+                    role_id INTEGER NOT NULL,
+                
+                    FOREIGN KEY (role_id) REFERENCES roles(id)
+                );
+                """;
+
+        stmt.execute(createUsers);
+
+        String createOrders = """
+                CREATE TABLE IF NOT EXISTS orders (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                
+                    FOREIGN KEY (user_id) REFERENCES users(id)
+                );
+                """;
+
+        stmt.execute(createOrders);
+
+        String createBooksOrders = """
+                CREATE TABLE IF NOT EXISTS books_orders (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    book_id INTEGER NOT NULL,
+                    order_id INTEGER NOT NULL,
+                
+                    FOREIGN KEY (book_id) REFERENCES books(id),
+                    FOREIGN KEY (order_id) REFERENCES orders(id)
+                );
+                """;
+
+        stmt.execute(createBooksOrders);
     }
 }
