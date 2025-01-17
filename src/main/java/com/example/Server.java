@@ -1,9 +1,9 @@
 package com.example;
 
-import com.example.messages.AddBookMessage;
-import com.example.messages.AddUserMessage;
-import com.example.messages.MessageType;
-import com.example.messages.MessageVariant;
+import com.example.requests.AddBookRequest;
+import com.example.requests.AddUserRequest;
+import com.example.requests.RequestType;
+import com.example.requests.RequestVariant;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.net.*;
@@ -24,12 +24,12 @@ public class Server {
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-        String messageStr;
+        String requestStr;
 
-        while ((messageStr = in.readLine()) != null) {
+        while ((requestStr = in.readLine()) != null) {
             try {
-                MessageVariant message = createMessage(messageStr);
-                handleMessage(message);
+                RequestVariant request = parseRequest(requestStr);
+                handleRequest(request);
             } catch (SQLException | JsonProcessingException e) {
                 System.out.println(e.toString());
             }
@@ -48,35 +48,35 @@ public class Server {
         }
     }
 
-    private MessageVariant createMessage(String messageStr) throws JsonProcessingException {
-        String[] parts = messageStr.split(":", 2);
+    private RequestVariant parseRequest(String requestStr) throws JsonProcessingException {
+        String[] parts = requestStr.split(":", 2);
 
         String header = parts[0];
         String content = parts[1];
 
-        switch (MessageType.fromMessageHeader(header)) {
-            case AddBook -> { return new MessageVariant.AddBookMessageValue(new AddBookMessage(content)); }
-            case AddUser -> { return new MessageVariant.AddUserMessageValue(new AddUserMessage(content)); }
+        switch (RequestType.fromRequestHeader(header)) {
+            case AddBook -> { return new RequestVariant.AddBookRequestValue(new AddBookRequest(content)); }
+            case AddUser -> { return new RequestVariant.AddUserRequestValue(new AddUserRequest(content)); }
             default -> {
                 System.out.printf("Error: Unrecognized message header: %s%n", header);
-                return new MessageVariant.InvalidMessageValue();
+                return new RequestVariant.InvalidRequestValue();
             }
         }
     }
 
-    private void handleMessage(MessageVariant message) throws SQLException {
-        switch (message) {
-            case MessageVariant.AddBookMessageValue addBookMessageValue -> addBook(addBookMessageValue.value());
-            case MessageVariant.AddUserMessageValue addUserMessageValue -> addUser(addUserMessageValue.value());
-            case MessageVariant.InvalidMessageValue invalidMessageValue -> {}
+    private void handleRequest(RequestVariant request) throws SQLException {
+        switch (request) {
+            case RequestVariant.AddBookRequestValue addBookRequestValue -> addBook(addBookRequestValue.value());
+            case RequestVariant.AddUserRequestValue addUserRequestValue -> addUser(addUserRequestValue.value());
+            case RequestVariant.InvalidRequestValue invalidRequestValue -> {}
         }
     }
 
-    private void addBook(AddBookMessage addBookMessage) throws SQLException {
-        dbConnection.addBook(addBookMessage.book);
+    private void addBook(AddBookRequest addBookRequest) throws SQLException {
+        dbConnection.addBook(addBookRequest.book);
     }
 
-    private void addUser(AddUserMessage addUserMessage) throws SQLException {
-        dbConnection.addUser(addUserMessage.user);
+    private void addUser(AddUserRequest addUserRequest) throws SQLException {
+        dbConnection.addUser(addUserRequest.user);
     }
 }

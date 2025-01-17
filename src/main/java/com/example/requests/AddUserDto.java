@@ -1,6 +1,6 @@
-package com.example.dto;
+package com.example.requests;
 
-public class UserDto {
+public class AddUserDto {
     public String name;
     public String email;
     public String password;

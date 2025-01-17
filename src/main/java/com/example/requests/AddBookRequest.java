@@ -1,19 +1,18 @@
-package com.example.messages;
+package com.example.requests;
 
-import com.example.dto.BookDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class AddBookMessage {
-    public final BookDto book;
+public class AddBookRequest {
+    public final AddBookDto book;
 
-    public AddBookMessage(BookDto book) {
+    public AddBookRequest(AddBookDto book) {
         this.book = book;
     }
 
-    public AddBookMessage(String json) throws JsonProcessingException {
+    public AddBookRequest(String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        book = objectMapper.readValue(json, BookDto.class);
+        book = objectMapper.readValue(json, AddBookDto.class);
     }
 
     public String deserialize() throws JsonProcessingException {

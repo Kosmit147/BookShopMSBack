@@ -1,7 +1,7 @@
 package com.example;
 
-import com.example.dto.BookDto;
-import com.example.dto.UserDto;
+import com.example.requests.AddBookDto;
+import com.example.requests.AddUserDto;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -29,7 +29,7 @@ public class DbConnection {
         }
     }
 
-    public void addBook(BookDto book) throws SQLException {
+    public void addBook(AddBookDto book) throws SQLException {
         String addBook = """
                 INSERT INTO books(title, author, price) VALUES(?, ?, ?);
                 """;
@@ -43,7 +43,7 @@ public class DbConnection {
         stmt.executeUpdate();
     }
 
-    public void addUser(UserDto user) throws SQLException {
+    public void addUser(AddUserDto user) throws SQLException {
         int roleId = getRoleId(user.roleName);
 
         String addBook = """
