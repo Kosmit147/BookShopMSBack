@@ -1,7 +1,7 @@
 package com.example;
 
 import com.example.dto.BookDto;
-import com.example.dto.ServerErrorDto;
+import com.example.dto.ErrorDto;
 import com.example.requests.*;
 import com.example.responses.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,17 +24,11 @@ public class Server {
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-        String requestStr;
+        String request;
 
-        while ((requestStr = in.readLine()) != null) {
-            try {
-                // TODO: simplify request parsing, maybe get rid of the variant?
-                RequestVariant request = parseRequest(requestStr);
-                String response = handleRequest(request);
-                out.println(response);
-            } catch (SQLException | JsonProcessingException e) {
-                System.out.println(e.toString());
-            }
+        while ((request = in.readLine()) != null) {
+            String response = handleRequest(request);
+            out.println(response);
         }
     }
 
@@ -50,56 +44,48 @@ public class Server {
         }
     }
 
-    private RequestVariant parseRequest(String requestStr) throws JsonProcessingException {
+    private String handleRequest(String requestStr) {
         String[] parts = requestStr.split(":", 2);
 
         String header = parts[0];
         String content = parts.length >= 2 ? parts[1] : "";
 
-        switch (RequestType.fromRequestHeader(header)) {
-            case AddBook -> { return new RequestVariant.AddBookRequestValue(new AddBookRequest(content)); }
-            case AddUser -> { return new RequestVariant.AddUserRequestValue(new AddUserRequest(content)); }
-            case SelectBooks -> { return new RequestVariant.SelectBooksRequestValue(new SelectBooksRequest()); }
-            default -> { return new RequestVariant.InvalidRequestValue(); }
-        }
-    }
-
-    private String handleRequest(RequestVariant request) throws SQLException {
-        switch (request) {
-            case RequestVariant.AddBookRequestValue value -> { return addBook(value.value()); }
-            case RequestVariant.AddUserRequestValue value -> { return addUser(value.value()); }
-            case RequestVariant.SelectBooksRequestValue value -> { return selectBooks(); }
-            case RequestVariant.InvalidRequestValue value -> {
-                ServerErrorDto dto = new ServerErrorDto("Invalid Request");
-                return new ServerErrorResponse(dto).create();
+        try {
+            switch (RequestType.fromRequestHeader(header)) {
+                case AddBook -> { return addBook(new AddBookRequest(content)); }
+                case AddUser -> { return addUser(new AddUserRequest(content)); }
+                case SelectBooks -> { return selectBooks(); }
+                default -> { return new ErrorResponse(new ErrorDto("Invalid Request")).create(); }
             }
+        } catch (JsonProcessingException e) {
+            return new ErrorResponse(new ErrorDto(e.toString())).create();
         }
     }
 
-    private String addBook(AddBookRequest addBookRequest) throws SQLException {
+    private String addBook(AddBookRequest addBookRequest) {
         try {
             dbConnection.addBook(addBookRequest.book);
             return new OkResponse().create();
         } catch (SQLException e) {
-            return new ServerErrorResponse(new ServerErrorDto(e.toString())).create();
+            return new ErrorResponse(new ErrorDto(e.toString())).create();
         }
     }
 
-    private String addUser(AddUserRequest addUserRequest) throws SQLException {
+    private String addUser(AddUserRequest addUserRequest) {
         try {
             dbConnection.addUser(addUserRequest.user);
             return new OkResponse().create();
         } catch (SQLException e) {
-            return new ServerErrorResponse(new ServerErrorDto(e.toString())).create();
+            return new ErrorResponse(new ErrorDto(e.toString())).create();
         }
     }
 
-    private String selectBooks() throws SQLException {
+    private String selectBooks() {
         try {
             BookDto[] books = dbConnection.selectBooks().toArray(new BookDto[0]);
             return new SelectBooksResponse(books).create();
         } catch (SQLException | JsonProcessingException e) {
-            return new ServerErrorResponse(new ServerErrorDto(e.toString())).create();
+            return new ErrorResponse(new ErrorDto(e.toString())).create();
         }
     }
 }

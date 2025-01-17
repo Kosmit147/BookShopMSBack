@@ -2,19 +2,19 @@ package com.example.responses;
 
 public enum ResponseType {
     Ok,
-    ServerError;
+    Error;
 
     public static ResponseType fromResponseHeader(String header) {
         switch (header) {
             case "Ok" -> { return ResponseType.Ok; }
-            default -> { return ResponseType.ServerError; }
+            default -> { return ResponseType.Error; }
         }
     }
 
     public static String toHeader(ResponseType type) {
         switch (type) {
             case Ok -> { return "Ok"; }
-            default -> { return "ServerError"; }
+            default -> { return "Error"; }
         }
     }
 

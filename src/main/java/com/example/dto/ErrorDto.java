@@ -1,9 +1,9 @@
 package com.example.dto;
 
-public class ServerErrorDto {
+public class ErrorDto {
     String description;
 
-    public ServerErrorDto(String description) {
+    public ErrorDto(String description) {
         this.description = description;
     }
 
