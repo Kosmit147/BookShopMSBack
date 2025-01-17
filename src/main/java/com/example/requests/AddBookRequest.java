@@ -10,13 +10,14 @@ public class AddBookRequest {
         this.book = book;
     }
 
-    public AddBookRequest(String json) throws JsonProcessingException {
+    public AddBookRequest(String requestContent) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        book = objectMapper.readValue(json, AddBookDto.class);
+        book = objectMapper.readValue(requestContent, AddBookDto.class);
     }
 
-    public String deserialize() throws JsonProcessingException {
+    public String create() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(book);
+        String content = objectMapper.writeValueAsString(book);
+        return Request.create(RequestType.AddBook, content);
     }
 }

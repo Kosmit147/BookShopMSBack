@@ -19,6 +19,7 @@ public class DbConnection {
         connection = DriverManager.getConnection(url);
         System.out.println("Connected to database.");
         createTables();
+        insertValues();
     }
 
     public void close() {
@@ -44,7 +45,7 @@ public class DbConnection {
     }
 
     public void addUser(AddUserDto user) throws SQLException {
-        int roleId = getRoleId(user.roleName);
+        int roleId = getRoleId("user");
 
         String addBook = """
                 INSERT INTO users(name, email, password, role_id) VALUES(?, ?, ?, ?);
@@ -114,6 +115,9 @@ public class DbConnection {
         String createOrders = """
                 CREATE TABLE IF NOT EXISTS orders (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    street TEXT NOT NULL,
+                    city TEXT NOT NULL,
+                    zip TEXT NOT NULL,
                     user_id INTEGER NOT NULL,
                 
                     FOREIGN KEY (user_id) REFERENCES users(id)
@@ -141,5 +145,14 @@ public class DbConnection {
                 """;
 
         stmt.execute(createBooksOrders);
+    }
+
+    private void insertValues() throws SQLException {
+        String insertUserRole = """
+                INSERT OR REPLACE INTO roles(name) VALUES('user');
+                """;
+
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate(insertUserRole);
     }
 }

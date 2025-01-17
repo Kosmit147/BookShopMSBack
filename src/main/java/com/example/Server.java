@@ -4,6 +4,7 @@ import com.example.requests.AddBookRequest;
 import com.example.requests.AddUserRequest;
 import com.example.requests.RequestType;
 import com.example.requests.RequestVariant;
+import com.example.responses.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.net.*;
@@ -29,7 +30,8 @@ public class Server {
         while ((requestStr = in.readLine()) != null) {
             try {
                 RequestVariant request = parseRequest(requestStr);
-                handleRequest(request);
+                String response = handleRequest(request);
+                out.println(response);
             } catch (SQLException | JsonProcessingException e) {
                 System.out.println(e.toString());
             }
@@ -52,31 +54,33 @@ public class Server {
         String[] parts = requestStr.split(":", 2);
 
         String header = parts[0];
-        String content = parts[1];
+        String content = parts.length >= 2 ? parts[1] : "";
 
         switch (RequestType.fromRequestHeader(header)) {
             case AddBook -> { return new RequestVariant.AddBookRequestValue(new AddBookRequest(content)); }
             case AddUser -> { return new RequestVariant.AddUserRequestValue(new AddUserRequest(content)); }
-            default -> {
-                System.out.printf("Error: Unrecognized message header: %s%n", header);
-                return new RequestVariant.InvalidRequestValue();
+            default -> { return new RequestVariant.InvalidRequestValue(); }
+        }
+    }
+
+    private String handleRequest(RequestVariant request) throws SQLException {
+        switch (request) {
+            case RequestVariant.AddBookRequestValue value -> { return addBook(value.value()); }
+            case RequestVariant.AddUserRequestValue value -> { return addUser(value.value()); }
+            case RequestVariant.InvalidRequestValue value -> {
+                ServerErrorDto dto = new ServerErrorDto("Invalid Request");
+                return new ServerErrorResponse(dto).create();
             }
         }
     }
 
-    private void handleRequest(RequestVariant request) throws SQLException {
-        switch (request) {
-            case RequestVariant.AddBookRequestValue addBookRequestValue -> addBook(addBookRequestValue.value());
-            case RequestVariant.AddUserRequestValue addUserRequestValue -> addUser(addUserRequestValue.value());
-            case RequestVariant.InvalidRequestValue invalidRequestValue -> {}
-        }
-    }
-
-    private void addBook(AddBookRequest addBookRequest) throws SQLException {
+    private String addBook(AddBookRequest addBookRequest) throws SQLException {
         dbConnection.addBook(addBookRequest.book);
+        return new OkResponse().create();
     }
 
-    private void addUser(AddUserRequest addUserRequest) throws SQLException {
+    private String addUser(AddUserRequest addUserRequest) throws SQLException {
         dbConnection.addUser(addUserRequest.user);
+        return new OkResponse().create();
     }
 }

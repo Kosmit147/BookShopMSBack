@@ -10,13 +10,14 @@ public class AddUserRequest {
         this.user = user;
     }
 
-    public AddUserRequest(String json) throws JsonProcessingException {
+    public AddUserRequest(String requestContent) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        user = objectMapper.readValue(json, AddUserDto.class);
+        user = objectMapper.readValue(requestContent, AddUserDto.class);
     }
 
-    public String deserialize() throws JsonProcessingException {
+    public String create() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(user);
+        String content = objectMapper.writeValueAsString(user);
+        return Request.create(RequestType.AddUser, content);
     }
 }
