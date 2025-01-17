@@ -1,14 +1,16 @@
 package com.example;
 
-import com.example.requests.AddBookDto;
-import com.example.requests.AddUserDto;
+import com.example.dto.BookDto;
+import com.example.dto.AddUserDto;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 
 public class DbConnection {
     public static final String url = "jdbc:sqlite:bookshop.db";
@@ -30,7 +32,7 @@ public class DbConnection {
         }
     }
 
-    public void addBook(AddBookDto book) throws SQLException {
+    public void addBook(BookDto book) throws SQLException {
         String addBook = """
                 INSERT INTO books(title, author, price) VALUES(?, ?, ?);
                 """;
@@ -61,12 +63,33 @@ public class DbConnection {
         stmt.executeUpdate();
     }
 
+    public ArrayList<BookDto> selectBooks() throws SQLException {
+        String selectBooks = """
+                SELECT * FROM books;
+                """;
+
+        Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery(selectBooks);
+
+        ArrayList<BookDto> result = new ArrayList<>();
+
+        while (rs.next()) {
+            String title = rs.getString("title");
+            String author = rs.getString("author");
+            BigDecimal price = rs.getBigDecimal("price");
+
+            result.add(new BookDto(title, author, price));
+        }
+
+        return result;
+    }
+
     public int getRoleId(String roleName) throws SQLException {
-        String selectRole = """
+        String selectRoleId = """
                 SELECT id FROM roles WHERE name == ?;
                 """;
 
-        PreparedStatement stmt = connection.prepareStatement(selectRole);
+        PreparedStatement stmt = connection.prepareStatement(selectRoleId);
         stmt.setString(1, roleName);
         ResultSet rs = stmt.executeQuery();
         return rs.getInt("id");

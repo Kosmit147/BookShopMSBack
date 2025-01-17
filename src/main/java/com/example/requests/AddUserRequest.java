@@ -1,5 +1,6 @@
 package com.example.requests;
 
+import com.example.dto.AddUserDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

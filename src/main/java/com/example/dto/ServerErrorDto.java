@@ -1,4 +1,4 @@
-package com.example.responses;
+package com.example.dto;
 
 public class ServerErrorDto {
     String description;

@@ -1,4 +1,4 @@
-package com.example.requests;
+package com.example.dto;
 
 public class AddUserDto {
     public String name;

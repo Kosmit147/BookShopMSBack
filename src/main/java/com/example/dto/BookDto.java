@@ -1,13 +1,13 @@
-package com.example.requests;
+package com.example.dto;
 
 import java.math.BigDecimal;
 
-public class AddBookDto {
+public class BookDto {
     public String title;
     public String author;
     public BigDecimal price;
 
-    AddBookDto(String title, String author, BigDecimal price) {
+    public BookDto(String title, String author, BigDecimal price) {
         this.title = title;
         this.author = author;
         this.price = price;

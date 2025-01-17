@@ -1,5 +1,6 @@
 package com.example.responses;
 
+import com.example.dto.ServerErrorDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
