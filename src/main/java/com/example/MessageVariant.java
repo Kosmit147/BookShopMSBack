@@ -1,5 +1,8 @@
-package com.example.messages;
+package com.example;
 
-public sealed interface MessageVariant permits MessageVariant.AddBookMessageValue {
-    record AddBookMessageValue(AddBookMessage addBookMessage) implements MessageVariant {}
+import com.example.messages.AddBookMessage;
+
+sealed interface MessageVariant permits MessageVariant.AddBookMessageValue, MessageVariant.InvalidMessageValue {
+    record AddBookMessageValue(AddBookMessage value) implements MessageVariant {}
+    record InvalidMessageValue() implements MessageVariant {}
 }

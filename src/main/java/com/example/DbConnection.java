@@ -1,9 +1,12 @@
 package com.example;
 
+import com.example.dto.BookDto;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 
 public class DbConnection {
     public static final String url = "jdbc:sqlite:bookshop.db";
@@ -13,27 +16,29 @@ public class DbConnection {
     DbConnection() throws SQLException {
         connection = DriverManager.getConnection(url);
         System.out.println("Connected to database.");
-
         createTables();
-
-        // Statement stmt = connection.createStatement();
-        // String insertQuery = "INSERT INTO books (title) VALUES ('1984')";
-        // stmt.executeUpdate(insertQuery);
-
-        // String selectQuery = "SELECT * FROM books";
-        // ResultSet resultSet = stmt.executeQuery(selectQuery);
-
-        // System.out.println("Query Results:");
-
-        // while (resultSet.next()) {
-        //     int id = resultSet.getInt("id");
-        //     String title = resultSet.getString("title");
-        //     System.out.printf("ID: %d, Title: %s%n", id, title);
-        // }
     }
 
-    public void close() throws SQLException {
-        connection.close();
+    public void addBook(BookDto book) throws SQLException {
+        String addBook = """
+                INSERT INTO books(title, author, price) VALUES(?, ?, ?);
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(addBook);
+
+        stmt.setString(1, book.title);
+        stmt.setString(2, book.author);
+        stmt.setBigDecimal(3, book.price);
+
+        stmt.executeUpdate();
+    }
+
+    public void close() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
     }
 
     private void createTables() throws SQLException {
