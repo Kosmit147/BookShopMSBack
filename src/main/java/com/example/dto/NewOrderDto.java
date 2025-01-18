@@ -1,5 +1,8 @@
 package com.example.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class NewOrderDto {
     public String street;
     public String city;
@@ -8,7 +11,13 @@ public class NewOrderDto {
     public String userEmail;
     public String[] bookTitles;
 
-    public NewOrderDto(String street, String city, String zip, String date, String userEmail, String[] bookTitles) {
+    @JsonCreator
+    public NewOrderDto(@JsonProperty("street") String street,
+                       @JsonProperty("city") String city,
+                       @JsonProperty("zip") String zip,
+                       @JsonProperty("date") String date,
+                       @JsonProperty("userEmail") String userEmail,
+                       @JsonProperty("bookTitles") String[] bookTitles) {
         this.street = street;
         this.city = city;
         this.zip = zip;

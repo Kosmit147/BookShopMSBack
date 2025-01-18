@@ -1,11 +1,17 @@
 package com.example.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class NewUserDto {
     public String name;
     public String email;
     public String password;
 
-    public NewUserDto(String name, String email, String password) {
+    @JsonCreator
+    public NewUserDto(@JsonProperty("name") String name,
+                      @JsonProperty("email") String email,
+                      @JsonProperty("password") String password) {
         this.name = name;
         this.email = email;
         this.password = password;

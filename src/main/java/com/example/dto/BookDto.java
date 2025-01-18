@@ -1,5 +1,8 @@
 package com.example.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 
 public class BookDto {
@@ -7,7 +10,10 @@ public class BookDto {
     public String author;
     public BigDecimal price;
 
-    public BookDto(String title, String author, BigDecimal price) {
+    @JsonCreator
+    public BookDto(@JsonProperty("title") String title,
+                   @JsonProperty("author") String author,
+                   @JsonProperty("price") BigDecimal price) {
         this.title = title;
         this.author = author;
         this.price = price;

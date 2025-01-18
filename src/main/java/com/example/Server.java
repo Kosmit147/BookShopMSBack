@@ -55,6 +55,7 @@ public class Server {
                 case AddBook -> { return addBook(new AddBookRequest(content)); }
                 case AddUser -> { return addUser(new AddUserRequest(content)); }
                 case AddOrder -> { return addOrder(new AddOrderRequest(content)); }
+                case UpdateCart -> { return updateCart(new UpdateCartRequest(content)); }
                 case SelectBooks -> { return selectBooks(); }
                 default -> { return new ErrorResponse(new ErrorDto("Invalid Request")).create(); }
             }
@@ -84,6 +85,15 @@ public class Server {
     private String addOrder(AddOrderRequest addOrderRequest) {
         try {
             dbConnection.addOrder(addOrderRequest.order);
+            return new OkResponse().create();
+        } catch (SQLException e) {
+            return new ErrorResponse(new ErrorDto(e.toString())).create();
+        }
+    }
+
+    private String updateCart(UpdateCartRequest updateCartRequest) {
+        try {
+            dbConnection.updateCart(updateCartRequest.cart);
             return new OkResponse().create();
         } catch (SQLException e) {
             return new ErrorResponse(new ErrorDto(e.toString())).create();

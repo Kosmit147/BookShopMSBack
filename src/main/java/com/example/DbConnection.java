@@ -1,6 +1,7 @@
 package com.example;
 
 import com.example.dto.BookDto;
+import com.example.dto.UpdateCartDto;
 import com.example.dto.NewOrderDto;
 import com.example.dto.NewUserDto;
 
@@ -82,6 +83,25 @@ public class DbConnection {
         stmt.executeUpdate();
     }
 
+    public void updateCart(UpdateCartDto cart) throws SQLException {
+        int userId = selectUserIdByEmail(cart.userEmail);
+        Integer[] bookIds = selectBookIdsByTitles(cart.bookTitles).toArray(new Integer[0]);
+        int cartId = createCartForUser(userId);
+
+        for (Integer bookId : bookIds) {
+            String insertBooksCarts = """
+                    INSERT INTO books_carts(book_id, cart_id) VALUES(?, ?);
+                    """;
+
+            PreparedStatement stmt = connection.prepareStatement(insertBooksCarts);
+
+            stmt.setInt(1, bookId);
+            stmt.setInt(2, cartId);
+
+            stmt.executeUpdate();
+        }
+    }
+
     public ArrayList<BookDto> selectBooks() throws SQLException {
         String selectBooks = """
                 SELECT * FROM books;
@@ -98,6 +118,39 @@ public class DbConnection {
             BigDecimal price = rs.getBigDecimal("price");
 
             result.add(new BookDto(title, author, price));
+        }
+
+        return result;
+    }
+
+    public ArrayList<Integer> selectBookIdsByTitles(String[] titles) throws SQLException {
+        if (titles.length == 0) {
+            return new ArrayList<>();
+        }
+
+        StringBuilder selectBookIds = new StringBuilder("""
+                SELECT id FROM books WHERE title IN (
+                """);
+
+        for (int i = 0; i < titles.length; i++) {
+            selectBookIds.append("?");
+
+            if (i < titles.length - 1)
+                selectBookIds.append(", ");
+        }
+
+        selectBookIds.append(");");
+        PreparedStatement stmt = connection.prepareStatement(selectBookIds.toString());
+
+        for (int i = 0; i < titles.length; i++)
+            stmt.setString(i, titles[i]);
+
+        ResultSet rs = stmt.executeQuery();
+        ArrayList<Integer> result = new ArrayList<>();
+
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            result.add(id);
         }
 
         return result;
@@ -123,6 +176,35 @@ public class DbConnection {
         stmt.setString(1, userEmail);
         ResultSet rs = stmt.executeQuery();
         return rs.getInt("id");
+    }
+
+    public int selectCartIdByUserId(int userId) throws SQLException {
+        String selectCartId = """
+                SELECT id FROM carts WHERE user_id == ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(selectCartId);
+        stmt.setInt(1, userId);
+        ResultSet rs = stmt.executeQuery();
+
+        int cartId = -1;
+
+        if (rs.next())
+            cartId = rs.getInt("id");
+
+        return cartId;
+    }
+
+    private int createCartForUser(int userId) throws SQLException {
+        String createCart = """
+                INSERT OR REPLACE INTO carts(user_id) VALUES(?);
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(createCart);
+        stmt.setInt(1, userId);
+        stmt.executeUpdate();
+
+        return selectCartIdByUserId(userId);
     }
 
     private void createTables() throws SQLException {
@@ -203,7 +285,7 @@ public class DbConnection {
         String createCarts = """
                 CREATE TABLE IF NOT EXISTS carts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    user_id INTEGER NOT NULL,
+                    user_id INTEGER UNIQUE NOT NULL,
                 
                     FOREIGN KEY (user_id) REFERENCES users(id)
                     ON DELETE CASCADE
