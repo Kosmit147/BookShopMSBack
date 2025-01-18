@@ -57,6 +57,7 @@ public class Server {
                 case AddUserWithRole -> { return addUserWithRole(new AddUserWithRoleRequest(content)); }
                 case AddOrder -> { return addOrder(new AddOrderRequest(content)); }
                 case UpdateCart -> { return updateCart(new UpdateCartRequest(content)); }
+                case SelectBook -> { return selectBook(new SelectBookRequest(content)); }
                 case SelectBooks -> { return selectBooks(); }
                 default -> { return new ErrorResponse(new ErrorDto("Invalid Request")).create(); }
             }
@@ -106,6 +107,15 @@ public class Server {
             dbConnection.updateCart(updateCartRequest.cart);
             return new OkResponse().create();
         } catch (SQLException e) {
+            return new ErrorResponse(new ErrorDto(e.toString())).create();
+        }
+    }
+
+    private String selectBook(SelectBookRequest selectBookRequest) {
+        try {
+            BookDto book = dbConnection.selectBook(selectBookRequest.bookId);
+            return new SelectBookResponse(book).create();
+        } catch (SQLException | JsonProcessingException e) {
             return new ErrorResponse(new ErrorDto(e.toString())).create();
         }
     }

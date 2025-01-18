@@ -106,6 +106,27 @@ public class DbConnection {
         }
     }
 
+    public BookDto selectBook(IdDto book) throws SQLException {
+        String selectBooks = """
+                SELECT * FROM books WHERE id = ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(selectBooks);
+        stmt.setInt(1, book.id);
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            String title = rs.getString("title");
+            String author = rs.getString("author");
+            BigDecimal price = rs.getBigDecimal("price");
+
+            return new BookDto(title, author, price);
+        }
+
+        // TODO: implement 404 Not Found
+        throw new SQLException("Book not found");
+    }
+
     public ArrayList<BookDto> selectBooks() throws SQLException {
         String selectBooks = """
                 SELECT * FROM books;
