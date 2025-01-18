@@ -1,9 +1,6 @@
 package com.example;
 
-import com.example.dto.BookDto;
-import com.example.dto.UpdateCartDto;
-import com.example.dto.NewOrderDto;
-import com.example.dto.NewUserDto;
+import com.example.dto.*;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -49,7 +46,12 @@ public class DbConnection {
     }
 
     public void addUser(NewUserDto user) throws SQLException {
-        int roleId = selectRoleIdByName("user");
+        String role = "user";
+        addUserWithRole(new NewUserWithRoleDto(user.name, user.email, user.password, role));
+    }
+
+    public void addUserWithRole(NewUserWithRoleDto user) throws SQLException {
+        int roleId = selectRoleIdByName(user.role);
 
         String addBook = """
                 INSERT INTO users(name, email, password, role_id) VALUES(?, ?, ?, ?);
@@ -87,6 +89,8 @@ public class DbConnection {
         int userId = selectUserIdByEmail(cart.userEmail);
         Integer[] bookIds = selectBookIdsByTitles(cart.bookTitles).toArray(new Integer[0]);
         int cartId = createCartForUser(userId);
+
+        deleteAllBooksFromCart(cartId);
 
         for (Integer bookId : bookIds) {
             String insertBooksCarts = """
@@ -205,6 +209,16 @@ public class DbConnection {
         stmt.executeUpdate();
 
         return selectCartIdByUserId(userId);
+    }
+
+    private void deleteAllBooksFromCart(int cartId) throws SQLException {
+        String deleteBooks = """
+                DELETE FROM books_carts WHERE cart_id = ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(deleteBooks);
+        stmt.setInt(1, cartId);
+        stmt.executeUpdate();
     }
 
     private void createTables() throws SQLException {

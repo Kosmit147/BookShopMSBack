@@ -3,6 +3,7 @@ package com.example.requests;
 public enum RequestType {
     AddBook,
     AddUser,
+    AddUserWithRole,
     AddOrder,
     UpdateCart,
     SelectBooks,
@@ -12,6 +13,7 @@ public enum RequestType {
         switch (header) {
             case "AddBook" -> { return RequestType.AddBook; }
             case "AddUser" -> { return RequestType.AddUser; }
+            case "AddUserWithRole" -> { return RequestType.AddUserWithRole; }
             case "AddOrder" -> { return RequestType.AddOrder; }
             case "UpdateCart" -> { return RequestType.UpdateCart; }
             case "SelectBooks" -> { return RequestType.SelectBooks; }
@@ -23,6 +25,7 @@ public enum RequestType {
         switch (type) {
             case AddBook -> { return "AddBook"; }
             case AddUser -> { return "AddUser"; }
+            case AddUserWithRole -> { return "AddUserWithRole"; }
             case AddOrder -> { return "AddOrder"; }
             case UpdateCart -> { return "UpdateCart"; }
             case SelectBooks -> { return "SelectBooks"; }

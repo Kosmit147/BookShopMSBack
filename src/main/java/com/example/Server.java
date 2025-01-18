@@ -54,6 +54,7 @@ public class Server {
             switch (RequestType.fromRequestHeader(header)) {
                 case AddBook -> { return addBook(new AddBookRequest(content)); }
                 case AddUser -> { return addUser(new AddUserRequest(content)); }
+                case AddUserWithRole -> { return addUserWithRole(new AddUserWithRoleRequest(content)); }
                 case AddOrder -> { return addOrder(new AddOrderRequest(content)); }
                 case UpdateCart -> { return updateCart(new UpdateCartRequest(content)); }
                 case SelectBooks -> { return selectBooks(); }
@@ -76,6 +77,15 @@ public class Server {
     private String addUser(AddUserRequest addUserRequest) {
         try {
             dbConnection.addUser(addUserRequest.user);
+            return new OkResponse().create();
+        } catch (SQLException e) {
+            return new ErrorResponse(new ErrorDto(e.toString())).create();
+        }
+    }
+
+    private String addUserWithRole(AddUserWithRoleRequest addUserWithRoleRequest) {
+        try {
+            dbConnection.addUserWithRole(addUserWithRoleRequest.user);
             return new OkResponse().create();
         } catch (SQLException e) {
             return new ErrorResponse(new ErrorDto(e.toString())).create();
