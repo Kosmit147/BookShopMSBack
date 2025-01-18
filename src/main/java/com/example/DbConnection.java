@@ -1,7 +1,8 @@
 package com.example;
 
 import com.example.dto.BookDto;
-import com.example.dto.AddUserDto;
+import com.example.dto.NewOrderDto;
+import com.example.dto.NewUserDto;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -46,8 +47,8 @@ public class DbConnection {
         stmt.executeUpdate();
     }
 
-    public void addUser(AddUserDto user) throws SQLException {
-        int roleId = getRoleId("user");
+    public void addUser(NewUserDto user) throws SQLException {
+        int roleId = selectRoleIdByName("user");
 
         String addBook = """
                 INSERT INTO users(name, email, password, role_id) VALUES(?, ?, ?, ?);
@@ -59,6 +60,24 @@ public class DbConnection {
         stmt.setString(2, user.email);
         stmt.setString(3, user.password);
         stmt.setInt(4, roleId);
+
+        stmt.executeUpdate();
+    }
+
+    public void addOrder(NewOrderDto order) throws SQLException {
+        int userId = selectUserIdByEmail(order.userEmail);
+
+        String addOrder = """
+                INSERT INTO orders(street, city, zip, date, user_id) VALUES(?, ?, ?, ?, ?);
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(addOrder);
+
+        stmt.setString(1, order.street);
+        stmt.setString(2, order.city);
+        stmt.setString(3, order.zip);
+        stmt.setString(4, order.date);
+        stmt.setInt(5, userId);
 
         stmt.executeUpdate();
     }
@@ -84,13 +103,24 @@ public class DbConnection {
         return result;
     }
 
-    public int getRoleId(String roleName) throws SQLException {
+    public int selectRoleIdByName(String roleName) throws SQLException {
         String selectRoleId = """
                 SELECT id FROM roles WHERE name == ?;
                 """;
 
         PreparedStatement stmt = connection.prepareStatement(selectRoleId);
         stmt.setString(1, roleName);
+        ResultSet rs = stmt.executeQuery();
+        return rs.getInt("id");
+    }
+
+    public int selectUserIdByEmail(String userEmail) throws SQLException {
+        String selectUserId = """
+                SELECT id FROM users WHERE email == ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(selectUserId);
+        stmt.setString(1, userEmail);
         ResultSet rs = stmt.executeQuery();
         return rs.getInt("id");
     }
@@ -141,6 +171,7 @@ public class DbConnection {
                     street TEXT NOT NULL,
                     city TEXT NOT NULL,
                     zip TEXT NOT NULL,
+                    date TEXT NOT NULL,
                     user_id INTEGER NOT NULL,
                 
                     FOREIGN KEY (user_id) REFERENCES users(id)
@@ -168,6 +199,37 @@ public class DbConnection {
                 """;
 
         stmt.execute(createBooksOrders);
+
+        String createCarts = """
+                CREATE TABLE IF NOT EXISTS carts (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                
+                    FOREIGN KEY (user_id) REFERENCES users(id)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
+                );
+                """;
+
+        stmt.execute(createCarts);
+
+        String createBooksCarts = """
+                CREATE TABLE IF NOT EXISTS books_carts (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    book_id INTEGER NOT NULL,
+                    cart_id INTEGER NOT NULL,
+                
+                    FOREIGN KEY (book_id) REFERENCES books(id)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
+                
+                    FOREIGN KEY (cart_id) REFERENCES carts(id)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
+                );
+                """;
+
+        stmt.execute(createBooksCarts);
     }
 
     private void insertValues() throws SQLException {

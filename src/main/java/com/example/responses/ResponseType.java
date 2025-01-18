@@ -11,14 +11,14 @@ public enum ResponseType {
         }
     }
 
-    public static String toHeader(ResponseType type) {
+    public static String toResponseHeader(ResponseType type) {
         switch (type) {
             case Ok -> { return "Ok"; }
             default -> { return "Error"; }
         }
     }
 
-    public String toHeader() {
-        return ResponseType.toHeader(this);
+    public String toResponseHeader() {
+        return ResponseType.toResponseHeader(this);
     }
 }

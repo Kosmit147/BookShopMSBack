@@ -1,11 +1,11 @@
 package com.example.dto;
 
-public class AddUserDto {
+public class NewUserDto {
     public String name;
     public String email;
     public String password;
 
-    public AddUserDto(String name, String email, String password) {
+    public NewUserDto(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
