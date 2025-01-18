@@ -106,7 +106,7 @@ public class DbConnection {
         }
     }
 
-    public BookDto selectBook(IdDto book) throws SQLException {
+    public BookDto selectBook(IdDto book) throws SQLException, NotFoundException {
         String selectBooks = """
                 SELECT * FROM books WHERE id = ?;
                 """;
@@ -123,8 +123,7 @@ public class DbConnection {
             return new BookDto(title, author, price);
         }
 
-        // TODO: implement 404 Not Found
-        throw new SQLException("Book not found");
+        throw new NotFoundException();
     }
 
     public ArrayList<BookDto> selectBooks() throws SQLException {

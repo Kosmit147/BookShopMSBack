@@ -115,6 +115,8 @@ public class Server {
         try {
             BookDto book = dbConnection.selectBook(selectBookRequest.bookId);
             return new SelectBookResponse(book).create();
+        } catch (NotFoundException e) {
+            return new NotFoundResponse().create();
         } catch (SQLException | JsonProcessingException e) {
             return new ErrorResponse(new ErrorDto(e.toString())).create();
         }
