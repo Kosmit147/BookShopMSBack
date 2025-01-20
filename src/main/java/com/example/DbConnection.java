@@ -97,22 +97,22 @@ public class DbConnection {
             addBookToOrder(bookInfo.quantity, bookInfo.id, orderId);
     }
 
-    public BookDto selectBookById(int bookId) throws SQLException, NotFoundException {
-        String selectBooks = """
+    public BookDto selectBookById(int id) throws SQLException, NotFoundException {
+        String selectBook = """
                 SELECT * FROM books WHERE id = ?;
                 """;
 
-        PreparedStatement stmt = connection.prepareStatement(selectBooks);
-        stmt.setInt(1, bookId);
+        PreparedStatement stmt = connection.prepareStatement(selectBook);
+        stmt.setInt(1, id);
         ResultSet rs = stmt.executeQuery();
 
         if (rs.next()) {
-            int id = rs.getInt("id");
+            int bookId = rs.getInt("id");
             String title = rs.getString("title");
             String author = rs.getString("author");
             BigDecimal price = rs.getBigDecimal("price");
 
-            return new BookDto(id, title, author, price);
+            return new BookDto(bookId, title, author, price);
         }
 
         throw new NotFoundException();
@@ -138,6 +138,27 @@ public class DbConnection {
         }
 
         return result;
+    }
+
+    public UserDto selectUserById(int id) throws SQLException, NotFoundException {
+        String selectUser = """
+                SELECT * FROM users WHERE id = ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(selectUser);
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            int userId = rs.getInt("id");
+            String name = rs.getString("name");
+            String email = rs.getString("email");
+            String password = rs.getString("password");
+
+            return new UserDto(userId, name, email, password);
+        }
+
+        throw new NotFoundException();
     }
 
     public ArrayList<UserDto> selectUsers() throws SQLException {

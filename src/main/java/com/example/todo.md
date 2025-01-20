@@ -2,7 +2,6 @@
 - select all roles
 - select all orders
 - select orders for specific user
-- select user by id
 - select singular user for logging in
 
 # Update

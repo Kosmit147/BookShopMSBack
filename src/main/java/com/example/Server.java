@@ -57,6 +57,7 @@ public class Server {
                 case AddOrder -> { return addOrder(new AddOrderRequest(content)); }
                 case SelectBook -> { return selectBook(new SelectBookRequest(content)); }
                 case SelectBooks -> { return selectBooks(); }
+                case SelectUser -> { return selectUser(new SelectUserRequest(content)); }
                 case SelectUsers -> { return selectUsers(); }
                 default -> { return new ErrorResponse(new StringDto("Invalid Request")).create(); }
             }
@@ -103,7 +104,7 @@ public class Server {
 
     private String selectBook(SelectBookRequest selectBookRequest) {
         try {
-            BookDto book = dbConnection.selectBookById(selectBookRequest.bookId.getId());
+            BookDto book = dbConnection.selectBookById(selectBookRequest.id.getId());
             return new SelectBookResponse(book).create();
         } catch (NotFoundException e) {
             return new NotFoundResponse().create();
@@ -116,6 +117,17 @@ public class Server {
         try {
             BookDto[] books = dbConnection.selectBooks().toArray(new BookDto[0]);
             return new SelectBooksResponse(books).create();
+        } catch (SQLException | JsonProcessingException e) {
+            return new ErrorResponse(new StringDto(e.toString())).create();
+        }
+    }
+
+    private String selectUser(SelectUserRequest selectUserRequest) {
+        try {
+            UserDto user = dbConnection.selectUserById(selectUserRequest.id.getId());
+            return new SelectUserResponse(user).create();
+        } catch (NotFoundException e) {
+            return new NotFoundResponse().create();
         } catch (SQLException | JsonProcessingException e) {
             return new ErrorResponse(new StringDto(e.toString())).create();
         }

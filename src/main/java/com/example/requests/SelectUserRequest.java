@@ -4,14 +4,14 @@ import com.example.dto.IdDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class SelectBookRequest {
+public class SelectUserRequest {
     public final IdDto id;
 
-    public SelectBookRequest(IdDto id) {
+    public SelectUserRequest(IdDto id) {
         this.id = id;
     }
 
-    public SelectBookRequest(String requestContent) throws JsonProcessingException {
+    public SelectUserRequest(String requestContent) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         id = objectMapper.readValue(requestContent, IdDto.class);
     }
