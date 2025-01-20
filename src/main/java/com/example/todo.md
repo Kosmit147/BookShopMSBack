@@ -1,5 +1,4 @@
 # Select:
-- select all users
 - select all roles
 - select all orders
 - select orders for specific user
@@ -7,6 +6,7 @@
 - select singular user for logging in
 
 # Update
+- add role
 - edit book
 - edit user
 - change order status
@@ -16,6 +16,5 @@
 - delete usera
 
 # Other
-- redo updateCartDto
 - RoleDto instead of NewUserWithRoleDto
 - dodanie statusu i daty zamówienia(pola w bazie)

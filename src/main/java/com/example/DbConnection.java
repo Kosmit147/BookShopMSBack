@@ -68,13 +68,11 @@ public class DbConnection {
     }
 
     public void addOrder(NewOrderDto order) throws SQLException {
-        int userId = selectUserIdByEmail(order.userEmail);
-
         String addOrder = """
                 INSERT INTO orders(first_name, last_name, street, city, zip, date, user_id) VALUES(?, ?, ?, ?, ?, ?, ?);
                 """;
 
-        PreparedStatement stmt = connection.prepareStatement(addOrder);
+        PreparedStatement stmt = connection.prepareStatement(addOrder, Statement.RETURN_GENERATED_KEYS);
 
         stmt.setString(1, order.firstName);
         stmt.setString(2, order.lastName);
@@ -82,9 +80,21 @@ public class DbConnection {
         stmt.setString(4, order.city);
         stmt.setString(5, order.zip);
         stmt.setString(6, order.date);
-        stmt.setInt(7, userId);
+        stmt.setInt(7, order.userId);
 
-        stmt.executeUpdate();
+        int affectedRows = stmt.executeUpdate();
+
+        if (affectedRows <= 0)
+            return;
+
+        int orderId = -1;
+        ResultSet generatedKeys = stmt.getGeneratedKeys();
+
+        if (generatedKeys.next())
+            orderId = generatedKeys.getInt("id");
+
+        for (BookOrderInfo bookInfo : order.books)
+            addBookToOrder(bookInfo.quantity, bookInfo.id, orderId);
     }
 
     public BookDto selectBookById(int bookId) throws SQLException, NotFoundException {
@@ -222,6 +232,20 @@ public class DbConnection {
             cartId = rs.getInt("id");
 
         return cartId;
+    }
+
+    private void addBookToOrder(int quantity, int bookId, int orderId) throws SQLException {
+        String addBook = """
+                INSERT INTO books_orders(quantity, book_id, order_id) VALUES(?, ?, ?);
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(addBook);
+
+        stmt.setInt(1, quantity);
+        stmt.setInt(2, bookId);
+        stmt.setInt(3, orderId);
+
+        stmt.executeUpdate();
     }
 
     private int createCartForUser(int userId) throws SQLException {

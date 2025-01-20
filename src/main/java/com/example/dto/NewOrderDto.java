@@ -10,8 +10,8 @@ public class NewOrderDto {
     public String city;
     public String zip;
     public String date;
-    public String userEmail;
-    public String[] bookTitles;
+    public int userId;
+    public BookOrderInfo[] books;
 
     @JsonCreator
     public NewOrderDto(@JsonProperty("firstName") String firstName,
@@ -20,16 +20,16 @@ public class NewOrderDto {
                        @JsonProperty("city") String city,
                        @JsonProperty("zip") String zip,
                        @JsonProperty("date") String date,
-                       @JsonProperty("userEmail") String userEmail,
-                       @JsonProperty("bookTitles") String[] bookTitles) {
+                       @JsonProperty("userId") int userId,
+                       @JsonProperty("books") BookOrderInfo[] books) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.street = street;
         this.city = city;
         this.zip = zip;
         this.date = date;
-        this.userEmail = userEmail;
-        this.bookTitles = bookTitles;
+        this.userId = userId;
+        this.books = books;
     }
 
     public String getStreet() {
@@ -56,20 +56,20 @@ public class NewOrderDto {
         this.zip = zip;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public String[] getBookTitles() {
-        return bookTitles;
+    public BookOrderInfo[] getBooks() {
+        return books;
     }
 
-    public void setBookTitles(String[] bookTitles) {
-        this.bookTitles = bookTitles;
+    public void setBooks(BookOrderInfo[] books) {
+        this.books = books;
     }
 
     public String getDate() {
