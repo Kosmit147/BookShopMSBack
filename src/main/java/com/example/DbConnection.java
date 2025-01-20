@@ -31,7 +31,7 @@ public class DbConnection {
         }
     }
 
-    public void addBook(BookDto book) throws SQLException {
+    public void addBook(NewBookDto book) throws SQLException {
         String addBook = """
                 INSERT INTO books(title, author, price) VALUES(?, ?, ?);
                 """;
@@ -97,11 +97,12 @@ public class DbConnection {
         ResultSet rs = stmt.executeQuery();
 
         if (rs.next()) {
+            int id = rs.getInt("id");
             String title = rs.getString("title");
             String author = rs.getString("author");
             BigDecimal price = rs.getBigDecimal("price");
 
-            return new BookDto(title, author, price);
+            return new BookDto(id, title, author, price);
         }
 
         throw new NotFoundException();
@@ -118,11 +119,34 @@ public class DbConnection {
         ArrayList<BookDto> result = new ArrayList<>();
 
         while (rs.next()) {
+            int id = rs.getInt("id");
             String title = rs.getString("title");
             String author = rs.getString("author");
             BigDecimal price = rs.getBigDecimal("price");
 
-            result.add(new BookDto(title, author, price));
+            result.add(new BookDto(id, title, author, price));
+        }
+
+        return result;
+    }
+
+    public ArrayList<UserDto> selectUsers() throws SQLException {
+        String selectUsers = """
+                SELECT * FROM users;
+                """;
+
+        Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery(selectUsers);
+
+        ArrayList<UserDto> result = new ArrayList<>();
+
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String name = rs.getString("name");
+            String email = rs.getString("email");
+            String password = rs.getString("password");
+
+            result.add(new UserDto(id, name, email, password));
         }
 
         return result;

@@ -1,7 +1,6 @@
 package com.example;
 
-import com.example.dto.BookDto;
-import com.example.dto.StringDto;
+import com.example.dto.*;
 import com.example.requests.*;
 import com.example.responses.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -58,6 +57,7 @@ public class Server {
                 case AddOrder -> { return addOrder(new AddOrderRequest(content)); }
                 case SelectBook -> { return selectBook(new SelectBookRequest(content)); }
                 case SelectBooks -> { return selectBooks(); }
+                case SelectUsers -> { return selectUsers(); }
                 default -> { return new ErrorResponse(new StringDto("Invalid Request")).create(); }
             }
         } catch (JsonProcessingException e) {
@@ -116,6 +116,15 @@ public class Server {
         try {
             BookDto[] books = dbConnection.selectBooks().toArray(new BookDto[0]);
             return new SelectBooksResponse(books).create();
+        } catch (SQLException | JsonProcessingException e) {
+            return new ErrorResponse(new StringDto(e.toString())).create();
+        }
+    }
+
+    private String selectUsers() {
+        try {
+            UserDto[] users = dbConnection.selectUsers().toArray(new UserDto[0]);
+            return new SelectUsersResponse(users).create();
         } catch (SQLException | JsonProcessingException e) {
             return new ErrorResponse(new StringDto(e.toString())).create();
         }

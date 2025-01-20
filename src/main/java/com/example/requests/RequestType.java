@@ -7,6 +7,7 @@ public enum RequestType {
     AddOrder,
     SelectBook,
     SelectBooks,
+    SelectUsers,
     Invalid;
 
     public static RequestType fromRequestHeader(String header) {
@@ -17,6 +18,7 @@ public enum RequestType {
             case "AddOrder" -> { return RequestType.AddOrder; }
             case "SelectBook" -> { return RequestType.SelectBook; }
             case "SelectBooks" -> { return RequestType.SelectBooks; }
+            case "SelectUsers" -> { return RequestType.SelectUsers; }
             default -> { return RequestType.Invalid; }
         }
     }
@@ -29,6 +31,7 @@ public enum RequestType {
             case AddOrder -> { return "AddOrder"; }
             case SelectBook -> { return "SelectBook"; }
             case SelectBooks -> { return "SelectBooks"; }
+            case SelectUsers -> { return "SelectUsers"; }
             default -> { return "Invalid"; }
         }
     }
