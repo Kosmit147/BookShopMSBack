@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class NewOrderDto {
+    public String firstName;
+    public String lastName;
     public String street;
     public String city;
     public String zip;
@@ -12,12 +14,16 @@ public class NewOrderDto {
     public String[] bookTitles;
 
     @JsonCreator
-    public NewOrderDto(@JsonProperty("street") String street,
+    public NewOrderDto(@JsonProperty("firstName") String firstName,
+                       @JsonProperty("lastName") String lastName,
+                       @JsonProperty("street") String street,
                        @JsonProperty("city") String city,
                        @JsonProperty("zip") String zip,
                        @JsonProperty("date") String date,
                        @JsonProperty("userEmail") String userEmail,
                        @JsonProperty("bookTitles") String[] bookTitles) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.street = street;
         this.city = city;
         this.zip = zip;
@@ -72,5 +78,21 @@ public class NewOrderDto {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

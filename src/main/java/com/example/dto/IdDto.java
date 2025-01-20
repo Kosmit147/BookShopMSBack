@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class IdDto {
-    public int id;
+    int id;
 
     @JsonCreator
     public IdDto(@JsonProperty("id") int id) {

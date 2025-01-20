@@ -1,25 +1,25 @@
 package com.example.responses;
 
-import com.example.dto.ErrorDto;
+import com.example.dto.StringDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ErrorResponse {
-    public final ErrorDto error;
+    public final StringDto errorDescription;
 
-    public ErrorResponse(ErrorDto serverError) {
-        this.error = serverError;
+    public ErrorResponse(StringDto errorDescription) {
+        this.errorDescription = errorDescription;
     }
 
     public ErrorResponse(String responseContent) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        error = objectMapper.readValue(responseContent, ErrorDto.class);
+        errorDescription = objectMapper.readValue(responseContent, StringDto.class);
     }
 
     public String create() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            String content = objectMapper.writeValueAsString(error);
+            String content = objectMapper.writeValueAsString(errorDescription);
             return Response.create(ResponseType.Error, content);
         } catch (JsonProcessingException e) {
             return Response.create(ResponseType.Error, "Internal Server Error");

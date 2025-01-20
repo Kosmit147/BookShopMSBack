@@ -1,11 +1,21 @@
-# Requests:
-cart
-users
+# Select:
+- select all users
+- select all roles
+- select all orders
+- select orders for specific user
+- select user by id
+- select singular user for logging in
 
-redo updateCartDto
+# Update
+- edit book
+- edit user
+- change order status
 
-RoleDto instead of NewUserWithRoleDto
+# Delete
+- delete książki
+- delete usera
 
-404 NotFound
-
-first name, last name in order
+# Other
+- redo updateCartDto
+- RoleDto instead of NewUserWithRoleDto
+- dodanie statusu i daty zamówienia(pola w bazie)

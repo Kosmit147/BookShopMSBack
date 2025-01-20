@@ -71,48 +71,29 @@ public class DbConnection {
         int userId = selectUserIdByEmail(order.userEmail);
 
         String addOrder = """
-                INSERT INTO orders(street, city, zip, date, user_id) VALUES(?, ?, ?, ?, ?);
+                INSERT INTO orders(first_name, last_name, street, city, zip, date, user_id) VALUES(?, ?, ?, ?, ?, ?, ?);
                 """;
 
         PreparedStatement stmt = connection.prepareStatement(addOrder);
 
-        stmt.setString(1, order.street);
-        stmt.setString(2, order.city);
-        stmt.setString(3, order.zip);
-        stmt.setString(4, order.date);
-        stmt.setInt(5, userId);
+        stmt.setString(1, order.firstName);
+        stmt.setString(2, order.lastName);
+        stmt.setString(3, order.street);
+        stmt.setString(4, order.city);
+        stmt.setString(5, order.zip);
+        stmt.setString(6, order.date);
+        stmt.setInt(7, userId);
 
         stmt.executeUpdate();
     }
 
-    public void updateCart(UpdateCartDto cart) throws SQLException {
-        int userId = selectUserIdByEmail(cart.userEmail);
-        Integer[] bookIds = selectBookIdsByTitles(cart.bookTitles).toArray(new Integer[0]);
-        int cartId = createCartForUser(userId);
-
-        deleteAllBooksFromCart(cartId);
-
-        for (Integer bookId : bookIds) {
-            String insertBooksCarts = """
-                    INSERT INTO books_carts(book_id, cart_id) VALUES(?, ?);
-                    """;
-
-            PreparedStatement stmt = connection.prepareStatement(insertBooksCarts);
-
-            stmt.setInt(1, bookId);
-            stmt.setInt(2, cartId);
-
-            stmt.executeUpdate();
-        }
-    }
-
-    public BookDto selectBook(IdDto book) throws SQLException, NotFoundException {
+    public BookDto selectBookById(int bookId) throws SQLException, NotFoundException {
         String selectBooks = """
                 SELECT * FROM books WHERE id = ?;
                 """;
 
         PreparedStatement stmt = connection.prepareStatement(selectBooks);
-        stmt.setInt(1, book.id);
+        stmt.setInt(1, bookId);
         ResultSet rs = stmt.executeQuery();
 
         if (rs.next()) {
@@ -284,6 +265,8 @@ public class DbConnection {
         String createOrders = """
                 CREATE TABLE IF NOT EXISTS orders (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    first_name TEXT NOT NULL,
+                    last_name TEXT NOT NULL,
                     street TEXT NOT NULL,
                     city TEXT NOT NULL,
                     zip TEXT NOT NULL,
@@ -301,6 +284,7 @@ public class DbConnection {
         String createBooksOrders = """
                 CREATE TABLE IF NOT EXISTS books_orders (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    quantity INTEGER NOT NULL,
                     book_id INTEGER NOT NULL,
                     order_id INTEGER NOT NULL,
                 

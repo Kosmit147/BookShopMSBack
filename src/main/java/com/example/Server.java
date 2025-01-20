@@ -1,7 +1,7 @@
 package com.example;
 
 import com.example.dto.BookDto;
-import com.example.dto.ErrorDto;
+import com.example.dto.StringDto;
 import com.example.requests.*;
 import com.example.responses.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -56,13 +56,12 @@ public class Server {
                 case AddUser -> { return addUser(new AddUserRequest(content)); }
                 case AddUserWithRole -> { return addUserWithRole(new AddUserWithRoleRequest(content)); }
                 case AddOrder -> { return addOrder(new AddOrderRequest(content)); }
-                case UpdateCart -> { return updateCart(new UpdateCartRequest(content)); }
                 case SelectBook -> { return selectBook(new SelectBookRequest(content)); }
                 case SelectBooks -> { return selectBooks(); }
-                default -> { return new ErrorResponse(new ErrorDto("Invalid Request")).create(); }
+                default -> { return new ErrorResponse(new StringDto("Invalid Request")).create(); }
             }
         } catch (JsonProcessingException e) {
-            return new ErrorResponse(new ErrorDto(e.toString())).create();
+            return new ErrorResponse(new StringDto(e.toString())).create();
         }
     }
 
@@ -71,7 +70,7 @@ public class Server {
             dbConnection.addBook(addBookRequest.book);
             return new OkResponse().create();
         } catch (SQLException e) {
-            return new ErrorResponse(new ErrorDto(e.toString())).create();
+            return new ErrorResponse(new StringDto(e.toString())).create();
         }
     }
 
@@ -80,7 +79,7 @@ public class Server {
             dbConnection.addUser(addUserRequest.user);
             return new OkResponse().create();
         } catch (SQLException e) {
-            return new ErrorResponse(new ErrorDto(e.toString())).create();
+            return new ErrorResponse(new StringDto(e.toString())).create();
         }
     }
 
@@ -89,7 +88,7 @@ public class Server {
             dbConnection.addUserWithRole(addUserWithRoleRequest.user);
             return new OkResponse().create();
         } catch (SQLException e) {
-            return new ErrorResponse(new ErrorDto(e.toString())).create();
+            return new ErrorResponse(new StringDto(e.toString())).create();
         }
     }
 
@@ -98,27 +97,18 @@ public class Server {
             dbConnection.addOrder(addOrderRequest.order);
             return new OkResponse().create();
         } catch (SQLException e) {
-            return new ErrorResponse(new ErrorDto(e.toString())).create();
-        }
-    }
-
-    private String updateCart(UpdateCartRequest updateCartRequest) {
-        try {
-            dbConnection.updateCart(updateCartRequest.cart);
-            return new OkResponse().create();
-        } catch (SQLException e) {
-            return new ErrorResponse(new ErrorDto(e.toString())).create();
+            return new ErrorResponse(new StringDto(e.toString())).create();
         }
     }
 
     private String selectBook(SelectBookRequest selectBookRequest) {
         try {
-            BookDto book = dbConnection.selectBook(selectBookRequest.bookId);
+            BookDto book = dbConnection.selectBookById(selectBookRequest.bookId.getId());
             return new SelectBookResponse(book).create();
         } catch (NotFoundException e) {
             return new NotFoundResponse().create();
         } catch (SQLException | JsonProcessingException e) {
-            return new ErrorResponse(new ErrorDto(e.toString())).create();
+            return new ErrorResponse(new StringDto(e.toString())).create();
         }
     }
 
@@ -127,7 +117,7 @@ public class Server {
             BookDto[] books = dbConnection.selectBooks().toArray(new BookDto[0]);
             return new SelectBooksResponse(books).create();
         } catch (SQLException | JsonProcessingException e) {
-            return new ErrorResponse(new ErrorDto(e.toString())).create();
+            return new ErrorResponse(new StringDto(e.toString())).create();
         }
     }
 }
