@@ -60,6 +60,7 @@ public class Server {
                 case SelectUser -> { return selectUser(new SelectUserRequest(content)); }
                 case SelectUserForLogin -> { return selectUserForLogin(new SelectUserForLoginRequest(content)); }
                 case SelectUsers -> { return selectUsers(); }
+                case DeleteBook -> { return deleteBook(new DeleteBookRequest(content)); }
                 default -> { return new ErrorResponse(new StringDto("Invalid Request")).create(); }
             }
         } catch (JsonProcessingException e) {
@@ -137,6 +138,7 @@ public class Server {
     private String selectUserForLogin(SelectUserForLoginRequest selectUserRequest) {
         try {
             UserDto user = dbConnection.selectUserForLogin(selectUserRequest.loginData);
+            // TODO: should return sth other than SelectUserResponse
             return new SelectUserResponse(user).create();
         } catch (NotFoundException e) {
             return new NotFoundResponse().create();
@@ -152,6 +154,17 @@ public class Server {
         } catch (NotFoundException e) {
             return new NotFoundResponse().create();
         } catch (SQLException | JsonProcessingException e) {
+            return new ErrorResponse(new StringDto(e.toString())).create();
+        }
+    }
+
+    private String deleteBook(DeleteBookRequest deleteBookRequest) {
+        try {
+            dbConnection.deleteBook(deleteBookRequest.id.getId());
+            return new OkResponse().create();
+        } catch (NotFoundException e) {
+            return new NotFoundResponse().create();
+        } catch (SQLException e) {
             return new ErrorResponse(new StringDto(e.toString())).create();
         }
     }

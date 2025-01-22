@@ -281,11 +281,11 @@ public class DbConnection {
     }
 
     public int selectCartIdByUserId(int userId) throws SQLException {
-        String selectCartId = """
+        String selectCart = """
                 SELECT id FROM carts WHERE user_id == ?;
                 """;
 
-        PreparedStatement stmt = connection.prepareStatement(selectCartId);
+        PreparedStatement stmt = connection.prepareStatement(selectCart);
         stmt.setInt(1, userId);
         ResultSet rs = stmt.executeQuery();
 
@@ -295,6 +295,19 @@ public class DbConnection {
             cartId = rs.getInt("id");
 
         return cartId;
+    }
+
+    public void deleteBook(int bookId) throws SQLException, NotFoundException {
+        String deleteBook = """
+                DELETE FROM books WHERE id = ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(deleteBook);
+        stmt.setInt(1, bookId);
+        int affectedRows = stmt.executeUpdate();
+
+        if (affectedRows < 1)
+            throw new NotFoundException();
     }
 
     private void addBookToOrder(int quantity, int bookId, int orderId) throws SQLException {
@@ -444,11 +457,11 @@ public class DbConnection {
     }
 
     private void insertValues() throws SQLException {
-        String insertUserRole = """
-                INSERT OR REPLACE INTO roles(name) VALUES('user');
-                """;
+        // String insertUserRole = """
+        //         INSERT INTO roles(name) VALUES('user');
+        //         """;
 
-        Statement stmt = connection.createStatement();
-        stmt.executeUpdate(insertUserRole);
+        // Statement stmt = connection.createStatement();
+        // stmt.executeUpdate(insertUserRole);
     }
 }

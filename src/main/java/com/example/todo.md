@@ -2,7 +2,6 @@
 - select all roles
 - select all orders
 - select orders for specific user
-- select singular user for logging in
 
 # Update
 - add role
@@ -11,9 +10,8 @@
 - change order status
 
 # Delete
-- delete książki
-- delete usera
+- delete user
 
 # Other
 - RoleDto instead of NewUserWithRoleDto
-- dodanie statusu i daty zamówienia(pola w bazie)
+- Order status and date
