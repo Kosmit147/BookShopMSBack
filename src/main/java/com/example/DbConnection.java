@@ -142,7 +142,7 @@ public class DbConnection {
 
     public UserDto selectUserById(int id) throws SQLException, NotFoundException {
         String selectUser = """
-                SELECT * FROM users WHERE id = ?;
+                SELECT * FROM users id = ?;
                 """;
 
         PreparedStatement stmt = connection.prepareStatement(selectUser);
@@ -154,14 +154,55 @@ public class DbConnection {
             String name = rs.getString("name");
             String email = rs.getString("email");
             String password = rs.getString("password");
+            String roleName = getRoleName(rs.getInt("role_id"));
 
-            return new UserDto(userId, name, email, password);
+            return new UserDto(userId, name, email, password, roleName);
         }
 
         throw new NotFoundException();
     }
 
-    public ArrayList<UserDto> selectUsers() throws SQLException {
+    public UserDto selectUserForLogin(UserLoginDto loginData) throws SQLException, NotFoundException {
+        String selectUser = """
+                SELECT * FROM users WHERE email = ? AND password = ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(selectUser);
+        stmt.setString(1, loginData.email);
+        stmt.setString(2, loginData.password);
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            int userId = rs.getInt("id");
+            String name = rs.getString("name");
+            String email = rs.getString("email");
+            String password = rs.getString("password");
+            String roleName = getRoleName(rs.getInt("role_id"));
+
+            return new UserDto(userId, name, email, password, roleName);
+        }
+
+        throw new NotFoundException();
+    }
+
+    public String getRoleName(int roleId) throws SQLException, NotFoundException {
+        String selectUser = """
+                SELECT name FROM roles WHERE id = ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(selectUser);
+        stmt.setInt(1, roleId);
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            String name = rs.getString("name");
+            return name;
+        }
+
+        throw new NotFoundException();
+    }
+
+    public ArrayList<UserDto> selectUsers() throws SQLException, NotFoundException {
         String selectUsers = """
                 SELECT * FROM users;
                 """;
@@ -176,8 +217,9 @@ public class DbConnection {
             String name = rs.getString("name");
             String email = rs.getString("email");
             String password = rs.getString("password");
+            String roleName = getRoleName(rs.getInt("role_id"));
 
-            result.add(new UserDto(id, name, email, password));
+            result.add(new UserDto(id, name, email, password, roleName));
         }
 
         return result;
