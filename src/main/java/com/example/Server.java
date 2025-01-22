@@ -55,6 +55,7 @@ public class Server {
                 case AddUser -> { return addUser(new AddUserRequest(content)); }
                 case AddUserWithRole -> { return addUserWithRole(new AddUserWithRoleRequest(content)); }
                 case AddOrder -> { return addOrder(new AddOrderRequest(content)); }
+                case UpdateBook -> { return updateBook(new UpdateBookRequest(content)); }
                 case SelectBook -> { return selectBook(new SelectBookRequest(content)); }
                 case SelectBooks -> { return selectBooks(); }
                 case SelectUser -> { return selectUser(new SelectUserRequest(content)); }
@@ -100,6 +101,18 @@ public class Server {
             dbConnection.addOrder(addOrderRequest.order);
             return new OkResponse().create();
         } catch (SQLException e) {
+            return new ErrorResponse(new StringDto(e.toString())).create();
+        }
+    }
+
+    private String updateBook(UpdateBookRequest updateBookRequest) {
+        try {
+            dbConnection.updateBook(updateBookRequest.book);
+            return new OkResponse().create();
+        } catch (NotFoundException e) {
+            return new NotFoundResponse().create();
+        }
+        catch (SQLException e) {
             return new ErrorResponse(new StringDto(e.toString())).create();
         }
     }

@@ -97,6 +97,24 @@ public class DbConnection {
             addBookToOrder(bookInfo.quantity, bookInfo.id, orderId);
     }
 
+    public void updateBook(BookDto book) throws SQLException, NotFoundException {
+        String updateBook = """
+                UPDATE books
+                    SET title = ?, author = ?, price = ?
+                    WHERE id = ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(updateBook);
+        stmt.setString(1, book.title);
+        stmt.setString(2, book.author);
+        stmt.setBigDecimal(3, book.price);
+        stmt.setInt(4, book.id);
+        int rowsAffected = stmt.executeUpdate();
+
+        if (rowsAffected < 1)
+            throw new NotFoundException();
+    }
+
     public BookDto selectBookById(int id) throws SQLException, NotFoundException {
         String selectBook = """
                 SELECT * FROM books WHERE id = ?;

@@ -5,6 +5,7 @@ public enum RequestType {
     AddUser,
     AddUserWithRole,
     AddOrder,
+    UpdateBook,
     SelectBook,
     SelectBooks,
     SelectUser,
@@ -19,6 +20,7 @@ public enum RequestType {
             case "AddUser" -> { return RequestType.AddUser; }
             case "AddUserWithRole" -> { return RequestType.AddUserWithRole; }
             case "AddOrder" -> { return RequestType.AddOrder; }
+            case "UpdateBook" -> { return RequestType.UpdateBook; }
             case "SelectBook" -> { return RequestType.SelectBook; }
             case "SelectBooks" -> { return RequestType.SelectBooks; }
             case "SelectUser" -> { return RequestType.SelectUser; }
@@ -35,6 +37,7 @@ public enum RequestType {
             case AddUser -> { return "AddUser"; }
             case AddUserWithRole -> { return "AddUserWithRole"; }
             case AddOrder -> { return "AddOrder"; }
+            case UpdateBook -> { return "UpdateBook"; }
             case SelectBook -> { return "SelectBook"; }
             case SelectBooks -> { return "SelectBooks"; }
             case SelectUser -> { return "SelectUser"; }
