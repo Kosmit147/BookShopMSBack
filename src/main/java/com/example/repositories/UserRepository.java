@@ -122,4 +122,19 @@ public class UserRepository {
         ResultSet rs = stmt.executeQuery();
         return rs.getInt("id");
     }
+
+    public static void deleteUser(int userId) throws SQLException, NotFoundException {
+        Connection connection = DbConnection.getConnection();
+
+        String deleteBook = """
+                DELETE FROM users WHERE id = ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(deleteBook);
+        stmt.setInt(1, userId);
+        int affectedRows = stmt.executeUpdate();
+
+        if (affectedRows < 1)
+            throw new NotFoundException();
+    }
 }

@@ -65,6 +65,7 @@ public class Server {
                 case SelectUsers -> { return selectUsers(); }
                 case SelectRoles -> { return selectRoles(); }
                 case DeleteBook -> { return deleteBook(new DeleteBookRequest(content)); }
+                case DeleteUser -> { return deleteUser(new DeleteUserRequest(content)); }
                 default -> { return new ErrorResponse(new StringDto("Invalid Request")).create(); }
             }
         } catch (NotFoundException e) {
@@ -132,6 +133,11 @@ public class Server {
 
     private String deleteBook(DeleteBookRequest deleteBookRequest) throws SQLException, NotFoundException {
         BookRepository.deleteBook(deleteBookRequest.id.getId());
+        return new OkResponse().create();
+    }
+
+    private String deleteUser(DeleteUserRequest deleteUserRequest) throws SQLException, NotFoundException {
+        UserRepository.deleteUser(deleteUserRequest.id.getId());
         return new OkResponse().create();
     }
 }
