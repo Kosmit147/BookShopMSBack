@@ -14,7 +14,6 @@ public class DbConnection {
             connection = DriverManager.getConnection(url);
             System.out.println("Connected to database.");
             createTables();
-            insertValues();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -31,46 +30,6 @@ public class DbConnection {
             System.out.println(e.toString());
         }
     }
-
-    // TODO: either remove or reimplement these unused functions
-    // public static int selectCartIdByUserId(int userId) throws SQLException {
-    //     String selectCart = """
-    //             SELECT id FROM carts WHERE user_id == ?;
-    //             """;
-
-    //     PreparedStatement stmt = connection.prepareStatement(selectCart);
-    //     stmt.setInt(1, userId);
-    //     ResultSet rs = stmt.executeQuery();
-
-    //     int cartId = -1;
-
-    //     if (rs.next())
-    //         cartId = rs.getInt("id");
-
-    //     return cartId;
-    // }
-
-    // private static int createCartForUser(int userId) throws SQLException {
-    //     String createCart = """
-    //             INSERT OR REPLACE INTO carts(user_id) VALUES(?);
-    //             """;
-
-    //     PreparedStatement stmt = connection.prepareStatement(createCart);
-    //     stmt.setInt(1, userId);
-    //     stmt.executeUpdate();
-
-    //     return selectCartIdByUserId(userId);
-    // }
-
-    // private static void deleteAllBooksFromCart(int cartId) throws SQLException {
-    //     String deleteBooks = """
-    //             DELETE FROM books_carts WHERE cart_id = ?;
-    //             """;
-
-    //     PreparedStatement stmt = connection.prepareStatement(deleteBooks);
-    //     stmt.setInt(1, cartId);
-    //     stmt.executeUpdate();
-    // }
 
     private static void createTables() throws SQLException {
         Statement stmt = connection.createStatement();
@@ -181,15 +140,5 @@ public class DbConnection {
                 """;
 
         stmt.execute(createBooksCarts);
-    }
-
-    private static void insertValues() throws SQLException {
-        // TODO
-        // String insertUserRole = """
-        //         INSERT INTO roles(name) VALUES('user');
-        //         """;
-
-        // Statement stmt = connection.createStatement();
-        // stmt.executeUpdate(insertUserRole);
     }
 }

@@ -73,41 +73,6 @@ public class BookRepository {
         return result;
     }
 
-    public static ArrayList<Integer> selectBookIdsByTitles(String[] titles) throws SQLException {
-        Connection connection = DbConnection.getConnection();
-
-        if (titles.length == 0) {
-            return new ArrayList<>();
-        }
-
-        StringBuilder selectBookIds = new StringBuilder("""
-                SELECT id FROM books WHERE title IN (
-                """);
-
-        for (int i = 0; i < titles.length; i++) {
-            selectBookIds.append("?");
-
-            if (i < titles.length - 1)
-                selectBookIds.append(", ");
-        }
-
-        selectBookIds.append(");");
-        PreparedStatement stmt = connection.prepareStatement(selectBookIds.toString());
-
-        for (int i = 0; i < titles.length; i++)
-            stmt.setString(i, titles[i]);
-
-        ResultSet rs = stmt.executeQuery();
-        ArrayList<Integer> result = new ArrayList<>();
-
-        while (rs.next()) {
-            int id = rs.getInt("id");
-            result.add(id);
-        }
-
-        return result;
-    }
-
     public static void deleteBook(int bookId) throws SQLException, NotFoundException {
         Connection connection = DbConnection.getConnection();
 
