@@ -58,6 +58,9 @@ public class Server {
                 case AddRole -> { return addRole(new AddRoleRequest(content)); }
                 case AddUser -> { return addUser(new AddUserRequest(content)); }
                 case AddUserWithRole -> { return addUserWithRole(new AddUserWithRoleRequest(content)); }
+                case ChangeOrderStatus -> { return changeOrderStatus(new ChangeOrderStatusRequest(content)); }
+                case DeleteBook -> { return deleteBook(new DeleteBookRequest(content)); }
+                case DeleteUser -> { return deleteUser(new DeleteUserRequest(content)); }
                 case UpdateBook -> { return updateBook(new UpdateBookRequest(content)); }
                 case SelectBook -> { return selectBook(new SelectBookRequest(content)); }
                 case SelectBooks -> { return selectBooks(); }
@@ -66,8 +69,6 @@ public class Server {
                 case SelectUserForLogin -> { return selectUserForLogin(new SelectUserForLoginRequest(content)); }
                 case SelectUsers -> { return selectUsers(); }
                 case SelectRoles -> { return selectRoles(); }
-                case DeleteBook -> { return deleteBook(new DeleteBookRequest(content)); }
-                case DeleteUser -> { return deleteUser(new DeleteUserRequest(content)); }
                 default -> { return new ErrorResponse(new StringDto("Invalid Request")).create(); }
             }
         } catch (NotFoundException e) {
@@ -99,6 +100,21 @@ public class Server {
 
     private String addUserWithRole(AddUserWithRoleRequest addUserWithRoleRequest) throws SQLException {
         UserRepository.addUserWithRole(addUserWithRoleRequest.user);
+        return new OkResponse().create();
+    }
+
+    private String changeOrderStatus(ChangeOrderStatusRequest changeOrderStatusRequest) throws SQLException, NotFoundException {
+        OrderRepository.changeOrderStatus(changeOrderStatusRequest.changeOrderStatus);
+        return new OkResponse().create();
+    }
+
+    private String deleteBook(DeleteBookRequest deleteBookRequest) throws SQLException, NotFoundException {
+        BookRepository.deleteBook(deleteBookRequest.id.getId());
+        return new OkResponse().create();
+    }
+
+    private String deleteUser(DeleteUserRequest deleteUserRequest) throws SQLException, NotFoundException {
+        UserRepository.deleteUser(deleteUserRequest.id.getId());
         return new OkResponse().create();
     }
 
@@ -141,15 +157,5 @@ public class Server {
     private String selectRoles() throws SQLException, NotFoundException, JsonProcessingException {
         RoleDto[] roles = RoleRepository.selectRoles().toArray(new RoleDto[0]);
         return new SelectRolesResponse(roles).create();
-    }
-
-    private String deleteBook(DeleteBookRequest deleteBookRequest) throws SQLException, NotFoundException {
-        BookRepository.deleteBook(deleteBookRequest.id.getId());
-        return new OkResponse().create();
-    }
-
-    private String deleteUser(DeleteUserRequest deleteUserRequest) throws SQLException, NotFoundException {
-        UserRepository.deleteUser(deleteUserRequest.id.getId());
-        return new OkResponse().create();
     }
 }

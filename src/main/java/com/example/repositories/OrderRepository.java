@@ -2,10 +2,7 @@ package com.example.repositories;
 
 import com.example.DbConnection;
 import com.example.NotFoundException;
-import com.example.dto.BookOrderInfo;
-import com.example.dto.NewOrderDto;
-import com.example.dto.OrderDto;
-import com.example.dto.UserDto;
+import com.example.dto.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -58,6 +55,24 @@ public class OrderRepository {
         stmt.setInt(3, orderId);
 
         stmt.executeUpdate();
+    }
+
+    public static void changeOrderStatus(ChangeOrderStatusDto changeOrderStatus) throws SQLException, NotFoundException {
+        Connection connection = DbConnection.getConnection();
+
+        String changeStatus = """
+                UPDATE orders
+                    SET status = ?
+                    WHERE id = ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(changeStatus);
+        stmt.setString(1, changeOrderStatus.newStatus);
+        stmt.setInt(2, changeOrderStatus.id);
+        int rowsAffected = stmt.executeUpdate();
+
+        if (rowsAffected < 1)
+            throw new NotFoundException();
     }
 
     public static ArrayList<OrderDto> selectOrders() throws SQLException {

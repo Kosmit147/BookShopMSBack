@@ -6,6 +6,9 @@ public enum RequestType {
     AddRole,
     AddUser,
     AddUserWithRole,
+    ChangeOrderStatus,
+    DeleteBook,
+    DeleteUser,
     UpdateBook,
     SelectBook,
     SelectBooks,
@@ -14,8 +17,6 @@ public enum RequestType {
     SelectUserForLogin,
     SelectUsers,
     SelectRoles,
-    DeleteBook,
-    DeleteUser,
     Invalid;
 
     public static RequestType fromRequestHeader(String header) {
@@ -25,6 +26,9 @@ public enum RequestType {
             case "AddRole" -> { return RequestType.AddRole; }
             case "AddUser" -> { return RequestType.AddUser; }
             case "AddUserWithRole" -> { return RequestType.AddUserWithRole; }
+            case "ChangeOrderStatus" -> { return RequestType.ChangeOrderStatus; }
+            case "DeleteBook" -> { return RequestType.DeleteBook; }
+            case "DeleteUser" -> { return RequestType.DeleteUser; }
             case "UpdateBook" -> { return RequestType.UpdateBook; }
             case "SelectBook" -> { return RequestType.SelectBook; }
             case "SelectBooks" -> { return RequestType.SelectBooks; }
@@ -33,8 +37,6 @@ public enum RequestType {
             case "SelectUserForLogin" -> { return RequestType.SelectUserForLogin; }
             case "SelectUsers" -> { return RequestType.SelectUsers; }
             case "SelectRoles" -> { return RequestType.SelectRoles; }
-            case "DeleteBook" -> { return RequestType.DeleteBook; }
-            case "DeleteUser" -> { return RequestType.DeleteUser; }
             default -> { return RequestType.Invalid; }
         }
     }
@@ -46,6 +48,9 @@ public enum RequestType {
             case AddRole -> { return "AddRole"; }
             case AddUser -> { return "AddUser"; }
             case AddUserWithRole -> { return "AddUserWithRole"; }
+            case ChangeOrderStatus -> { return "ChangeOrderStatus"; }
+            case DeleteBook -> { return "DeleteBook"; }
+            case DeleteUser -> { return "DeleteUser"; }
             case UpdateBook -> { return "UpdateBook"; }
             case SelectBook -> { return "SelectBook"; }
             case SelectBooks -> { return "SelectBooks"; }
@@ -54,8 +59,6 @@ public enum RequestType {
             case SelectUserForLogin -> { return "SelectUserForLogin"; }
             case SelectUsers -> { return "SelectUsers"; }
             case SelectRoles -> { return "SelectRoles"; }
-            case DeleteBook -> { return "DeleteBook"; }
-            case DeleteUser -> { return "DeleteUser"; }
             default -> { return "Invalid"; }
         }
     }
