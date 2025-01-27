@@ -2,12 +2,25 @@ package com.example.repositories;
 
 import com.example.DbConnection;
 import com.example.NotFoundException;
+import com.example.dto.NewRoleDto;
 import com.example.dto.RoleDto;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 public class RoleRepository {
+    public static void addRole(NewRoleDto role) throws SQLException {
+        Connection connection = DbConnection.getConnection();
+
+        String addBook = """
+                INSERT INTO roles(name) VALUES(?);
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(addBook);
+        stmt.setString(1, role.name);
+        stmt.executeUpdate();
+    }
+
     public static ArrayList<RoleDto> selectRoles() throws SQLException {
         Connection connection = DbConnection.getConnection();
 

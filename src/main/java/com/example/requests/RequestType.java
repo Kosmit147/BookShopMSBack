@@ -2,9 +2,10 @@ package com.example.requests;
 
 public enum RequestType {
     AddBook,
+    AddOrder,
+    AddRole,
     AddUser,
     AddUserWithRole,
-    AddOrder,
     UpdateBook,
     SelectBook,
     SelectBooks,
@@ -19,9 +20,10 @@ public enum RequestType {
     public static RequestType fromRequestHeader(String header) {
         switch (header) {
             case "AddBook" -> { return RequestType.AddBook; }
+            case "AddOrder" -> { return RequestType.AddOrder; }
+            case "AddRole" -> { return RequestType.AddRole; }
             case "AddUser" -> { return RequestType.AddUser; }
             case "AddUserWithRole" -> { return RequestType.AddUserWithRole; }
-            case "AddOrder" -> { return RequestType.AddOrder; }
             case "UpdateBook" -> { return RequestType.UpdateBook; }
             case "SelectBook" -> { return RequestType.SelectBook; }
             case "SelectBooks" -> { return RequestType.SelectBooks; }
@@ -38,9 +40,10 @@ public enum RequestType {
     public static String toRequestHeader(RequestType type) {
         switch (type) {
             case AddBook -> { return "AddBook"; }
+            case AddOrder -> { return "AddOrder"; }
+            case AddRole -> { return "AddRole"; }
             case AddUser -> { return "AddUser"; }
             case AddUserWithRole -> { return "AddUserWithRole"; }
-            case AddOrder -> { return "AddOrder"; }
             case UpdateBook -> { return "UpdateBook"; }
             case SelectBook -> { return "SelectBook"; }
             case SelectBooks -> { return "SelectBooks"; }

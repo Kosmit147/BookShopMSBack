@@ -54,9 +54,10 @@ public class Server {
         try {
             switch (RequestType.fromRequestHeader(header)) {
                 case AddBook -> { return addBook(new AddBookRequest(content)); }
+                case AddOrder -> { return addOrder(new AddOrderRequest(content)); }
+                case AddRole -> { return addRole(new AddRoleRequest(content)); }
                 case AddUser -> { return addUser(new AddUserRequest(content)); }
                 case AddUserWithRole -> { return addUserWithRole(new AddUserWithRoleRequest(content)); }
-                case AddOrder -> { return addOrder(new AddOrderRequest(content)); }
                 case UpdateBook -> { return updateBook(new UpdateBookRequest(content)); }
                 case SelectBook -> { return selectBook(new SelectBookRequest(content)); }
                 case SelectBooks -> { return selectBooks(); }
@@ -80,6 +81,16 @@ public class Server {
         return new OkResponse().create();
     }
 
+    private String addOrder(AddOrderRequest addOrderRequest) throws SQLException {
+        OrderRepository.addOrder(addOrderRequest.order);
+        return new OkResponse().create();
+    }
+
+    private String addRole(AddRoleRequest addRoleRequest) throws SQLException {
+        RoleRepository.addRole(addRoleRequest.role);
+        return new OkResponse().create();
+    }
+
     private String addUser(AddUserRequest addUserRequest) throws SQLException {
         UserRepository.addUser(addUserRequest.user);
         return new OkResponse().create();
@@ -87,11 +98,6 @@ public class Server {
 
     private String addUserWithRole(AddUserWithRoleRequest addUserWithRoleRequest) throws SQLException {
         UserRepository.addUserWithRole(addUserWithRoleRequest.user);
-        return new OkResponse().create();
-    }
-
-    private String addOrder(AddOrderRequest addOrderRequest) throws SQLException {
-        OrderRepository.addOrder(addOrderRequest.order);
         return new OkResponse().create();
     }
 
