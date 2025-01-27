@@ -61,14 +61,15 @@ public class Server {
                 case ChangeOrderStatus -> { return changeOrderStatus(new ChangeOrderStatusRequest(content)); }
                 case DeleteBook -> { return deleteBook(new DeleteBookRequest(content)); }
                 case DeleteUser -> { return deleteUser(new DeleteUserRequest(content)); }
-                case UpdateBook -> { return updateBook(new UpdateBookRequest(content)); }
                 case SelectBook -> { return selectBook(new SelectBookRequest(content)); }
                 case SelectBooks -> { return selectBooks(); }
                 case SelectOrders -> { return selectOrders(); }
+                case SelectOrdersForUser -> { return selectOrdersForUser(new SelectOrdersForUserRequest(content)); }
                 case SelectUser -> { return selectUser(new SelectUserRequest(content)); }
                 case SelectUserForLogin -> { return selectUserForLogin(new SelectUserForLoginRequest(content)); }
                 case SelectUsers -> { return selectUsers(); }
                 case SelectRoles -> { return selectRoles(); }
+                case UpdateBook -> { return updateBook(new UpdateBookRequest(content)); }
                 default -> { return new ErrorResponse(new StringDto("Invalid Request")).create(); }
             }
         } catch (NotFoundException e) {
@@ -118,11 +119,6 @@ public class Server {
         return new OkResponse().create();
     }
 
-    private String updateBook(UpdateBookRequest updateBookRequest) throws SQLException, NotFoundException {
-        BookRepository.updateBook(updateBookRequest.book);
-        return new OkResponse().create();
-    }
-
     private String selectBook(SelectBookRequest selectBookRequest) throws SQLException, NotFoundException, JsonProcessingException {
         BookDto book = BookRepository.selectBookById(selectBookRequest.id.getId());
         return new SelectBookResponse(book).create();
@@ -138,6 +134,12 @@ public class Server {
         return new SelectOrdersResponse(orders).create();
     }
 
+    private String selectOrdersForUser(SelectOrdersForUserRequest selectOrdersForUserRequest) throws SQLException, JsonProcessingException {
+        OrderDto[] orders = OrderRepository.selectOrdersForUser(selectOrdersForUserRequest.userId.getId()).toArray(new OrderDto[0]);
+        // TODO: return sth other than selectOrdersResponse
+        return new SelectOrdersResponse(orders).create();
+    }
+
     private String selectUser(SelectUserRequest selectUserRequest) throws SQLException, NotFoundException, JsonProcessingException {
         UserDto user = UserRepository.selectUserById(selectUserRequest.id.getId());
         return new SelectUserResponse(user).create();
@@ -145,7 +147,7 @@ public class Server {
 
     private String selectUserForLogin(SelectUserForLoginRequest selectUserRequest) throws SQLException, NotFoundException, JsonProcessingException {
         UserDto user = UserRepository.selectUserForLogin(selectUserRequest.loginData);
-        // TODO: should return sth other than SelectUserResponse
+        // TODO: return sth other than selectUserResponse
         return new SelectUserResponse(user).create();
     }
 
@@ -157,5 +159,10 @@ public class Server {
     private String selectRoles() throws SQLException, NotFoundException, JsonProcessingException {
         RoleDto[] roles = RoleRepository.selectRoles().toArray(new RoleDto[0]);
         return new SelectRolesResponse(roles).create();
+    }
+
+    private String updateBook(UpdateBookRequest updateBookRequest) throws SQLException, NotFoundException {
+        BookRepository.updateBook(updateBookRequest.book);
+        return new OkResponse().create();
     }
 }

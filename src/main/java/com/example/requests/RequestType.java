@@ -9,14 +9,15 @@ public enum RequestType {
     ChangeOrderStatus,
     DeleteBook,
     DeleteUser,
-    UpdateBook,
     SelectBook,
     SelectBooks,
     SelectOrders,
+    SelectOrdersForUser,
     SelectUser,
     SelectUserForLogin,
     SelectUsers,
     SelectRoles,
+    UpdateBook,
     Invalid;
 
     public static RequestType fromRequestHeader(String header) {
@@ -29,14 +30,15 @@ public enum RequestType {
             case "ChangeOrderStatus" -> { return RequestType.ChangeOrderStatus; }
             case "DeleteBook" -> { return RequestType.DeleteBook; }
             case "DeleteUser" -> { return RequestType.DeleteUser; }
-            case "UpdateBook" -> { return RequestType.UpdateBook; }
             case "SelectBook" -> { return RequestType.SelectBook; }
             case "SelectBooks" -> { return RequestType.SelectBooks; }
             case "SelectOrders" -> { return RequestType.SelectOrders; }
+            case "SelectOrdersForUser" -> { return RequestType.SelectOrdersForUser; }
             case "SelectUser" -> { return RequestType.SelectUser; }
             case "SelectUserForLogin" -> { return RequestType.SelectUserForLogin; }
             case "SelectUsers" -> { return RequestType.SelectUsers; }
             case "SelectRoles" -> { return RequestType.SelectRoles; }
+            case "UpdateBook" -> { return RequestType.UpdateBook; }
             default -> { return RequestType.Invalid; }
         }
     }
@@ -51,14 +53,15 @@ public enum RequestType {
             case ChangeOrderStatus -> { return "ChangeOrderStatus"; }
             case DeleteBook -> { return "DeleteBook"; }
             case DeleteUser -> { return "DeleteUser"; }
-            case UpdateBook -> { return "UpdateBook"; }
             case SelectBook -> { return "SelectBook"; }
             case SelectBooks -> { return "SelectBooks"; }
             case SelectOrders -> { return "SelectOrders"; }
+            case SelectOrdersForUser -> { return "SelectOrdersForUser"; }
             case SelectUser -> { return "SelectUser"; }
             case SelectUserForLogin -> { return "SelectUserForLogin"; }
             case SelectUsers -> { return "SelectUsers"; }
             case SelectRoles -> { return "SelectRoles"; }
+            case UpdateBook -> { return "UpdateBook"; }
             default -> { return "Invalid"; }
         }
     }

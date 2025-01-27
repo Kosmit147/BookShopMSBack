@@ -23,7 +23,8 @@ public class OrderRepository {
         stmt.setString(4, order.city);
         stmt.setString(5, order.zip);
         stmt.setString(6, order.date);
-        stmt.setString(7, order.status);
+        // TODO: don't hardcode the status
+        stmt.setString(7, "preparing");
         stmt.setInt(8, order.userId);
 
         int affectedRows = stmt.executeUpdate();
@@ -97,6 +98,35 @@ public class OrderRepository {
             String date = rs.getString("date");
             String status = rs.getString("status");
             int userId = rs.getInt("user_id");
+
+            result.add(new OrderDto(id, firstName, lastName, street, city, zip, date, status, userId));
+        }
+
+        return result;
+    }
+
+    public static ArrayList<OrderDto> selectOrdersForUser(int userId) throws SQLException {
+        Connection connection = DbConnection.getConnection();
+
+        String selectOrders = """
+                SELECT * FROM orders WHERE user_id = ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(selectOrders);
+        stmt.setInt(1, userId);
+        ResultSet rs = stmt.executeQuery(selectOrders);
+
+        ArrayList<OrderDto> result = new ArrayList<>();
+
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String firstName = rs.getString("first_name");
+            String lastName = rs.getString("last_name");
+            String street = rs.getString("street");
+            String city = rs.getString("city");
+            String zip = rs.getString("zip");
+            String date = rs.getString("date");
+            String status = rs.getString("status");
 
             result.add(new OrderDto(id, firstName, lastName, street, city, zip, date, status, userId));
         }
