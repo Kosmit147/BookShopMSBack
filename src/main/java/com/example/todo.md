@@ -1,4 +1,4 @@
-# Select:
+# Select
 - select all roles
 - select all orders
 - select orders for specific user
@@ -11,7 +11,3 @@
 
 # Delete
 - delete user
-
-# Other
-- RoleDto instead of NewUserWithRoleDto
-- Order status and date

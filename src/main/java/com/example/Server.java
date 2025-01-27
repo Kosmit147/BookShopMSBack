@@ -1,6 +1,9 @@
 package com.example;
 
 import com.example.dto.*;
+import com.example.repositories.BookRepository;
+import com.example.repositories.OrderRepository;
+import com.example.repositories.UserRepository;
 import com.example.requests.*;
 import com.example.responses.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,10 +17,8 @@ public class Server {
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
-    private DbConnection dbConnection;
 
     public void start(int port) throws IOException, SQLException {
-        dbConnection = new DbConnection();
         serverSocket = new ServerSocket(port);
         clientSocket = serverSocket.accept();
         out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -37,7 +38,7 @@ public class Server {
             out.close();
             clientSocket.close();
             serverSocket.close();
-            dbConnection.close();
+            DbConnection.close();
         } catch (IOException e) {
             System.out.println(e.toString());
         }
@@ -64,63 +65,6 @@ public class Server {
                 case DeleteBook -> { return deleteBook(new DeleteBookRequest(content)); }
                 default -> { return new ErrorResponse(new StringDto("Invalid Request")).create(); }
             }
-        } catch (JsonProcessingException e) {
-            return new ErrorResponse(new StringDto(e.toString())).create();
-        }
-    }
-
-    private String addBook(AddBookRequest addBookRequest) {
-        try {
-            dbConnection.addBook(addBookRequest.book);
-            return new OkResponse().create();
-        } catch (SQLException e) {
-            return new ErrorResponse(new StringDto(e.toString())).create();
-        }
-    }
-
-    private String addUser(AddUserRequest addUserRequest) {
-        try {
-            dbConnection.addUser(addUserRequest.user);
-            return new OkResponse().create();
-        } catch (SQLException e) {
-            return new ErrorResponse(new StringDto(e.toString())).create();
-        }
-    }
-
-    private String addUserWithRole(AddUserWithRoleRequest addUserWithRoleRequest) {
-        try {
-            dbConnection.addUserWithRole(addUserWithRoleRequest.user);
-            return new OkResponse().create();
-        } catch (SQLException e) {
-            return new ErrorResponse(new StringDto(e.toString())).create();
-        }
-    }
-
-    private String addOrder(AddOrderRequest addOrderRequest) {
-        try {
-            dbConnection.addOrder(addOrderRequest.order);
-            return new OkResponse().create();
-        } catch (SQLException e) {
-            return new ErrorResponse(new StringDto(e.toString())).create();
-        }
-    }
-
-    private String updateBook(UpdateBookRequest updateBookRequest) {
-        try {
-            dbConnection.updateBook(updateBookRequest.book);
-            return new OkResponse().create();
-        } catch (NotFoundException e) {
-            return new NotFoundResponse().create();
-        }
-        catch (SQLException e) {
-            return new ErrorResponse(new StringDto(e.toString())).create();
-        }
-    }
-
-    private String selectBook(SelectBookRequest selectBookRequest) {
-        try {
-            BookDto book = dbConnection.selectBookById(selectBookRequest.id.getId());
-            return new SelectBookResponse(book).create();
         } catch (NotFoundException e) {
             return new NotFoundResponse().create();
         } catch (SQLException | JsonProcessingException e) {
@@ -128,57 +72,59 @@ public class Server {
         }
     }
 
-    private String selectBooks() {
-        try {
-            BookDto[] books = dbConnection.selectBooks().toArray(new BookDto[0]);
-            return new SelectBooksResponse(books).create();
-        } catch (SQLException | JsonProcessingException e) {
-            return new ErrorResponse(new StringDto(e.toString())).create();
-        }
+    private String addBook(AddBookRequest addBookRequest) throws SQLException {
+        BookRepository.addBook(addBookRequest.book);
+        return new OkResponse().create();
     }
 
-    private String selectUser(SelectUserRequest selectUserRequest) {
-        try {
-            UserDto user = dbConnection.selectUserById(selectUserRequest.id.getId());
-            return new SelectUserResponse(user).create();
-        } catch (NotFoundException e) {
-            return new NotFoundResponse().create();
-        } catch (SQLException | JsonProcessingException e) {
-            return new ErrorResponse(new StringDto(e.toString())).create();
-        }
+    private String addUser(AddUserRequest addUserRequest) throws SQLException {
+        UserRepository.addUser(addUserRequest.user);
+        return new OkResponse().create();
     }
 
-    private String selectUserForLogin(SelectUserForLoginRequest selectUserRequest) {
-        try {
-            UserDto user = dbConnection.selectUserForLogin(selectUserRequest.loginData);
-            // TODO: should return sth other than SelectUserResponse
-            return new SelectUserResponse(user).create();
-        } catch (NotFoundException e) {
-            return new NotFoundResponse().create();
-        } catch (SQLException | JsonProcessingException e) {
-            return new ErrorResponse(new StringDto(e.toString())).create();
-        }
+    private String addUserWithRole(AddUserWithRoleRequest addUserWithRoleRequest) throws SQLException {
+        UserRepository.addUserWithRole(addUserWithRoleRequest.user);
+        return new OkResponse().create();
     }
 
-    private String selectUsers() {
-        try {
-            UserDto[] users = dbConnection.selectUsers().toArray(new UserDto[0]);
-            return new SelectUsersResponse(users).create();
-        } catch (NotFoundException e) {
-            return new NotFoundResponse().create();
-        } catch (SQLException | JsonProcessingException e) {
-            return new ErrorResponse(new StringDto(e.toString())).create();
-        }
+    private String addOrder(AddOrderRequest addOrderRequest) throws SQLException {
+        OrderRepository.addOrder(addOrderRequest.order);
+        return new OkResponse().create();
     }
 
-    private String deleteBook(DeleteBookRequest deleteBookRequest) {
-        try {
-            dbConnection.deleteBook(deleteBookRequest.id.getId());
-            return new OkResponse().create();
-        } catch (NotFoundException e) {
-            return new NotFoundResponse().create();
-        } catch (SQLException e) {
-            return new ErrorResponse(new StringDto(e.toString())).create();
-        }
+    private String updateBook(UpdateBookRequest updateBookRequest) throws SQLException, NotFoundException {
+        BookRepository.updateBook(updateBookRequest.book);
+        return new OkResponse().create();
+    }
+
+    private String selectBook(SelectBookRequest selectBookRequest) throws SQLException, NotFoundException, JsonProcessingException {
+        BookDto book = BookRepository.selectBookById(selectBookRequest.id.getId());
+        return new SelectBookResponse(book).create();
+    }
+
+    private String selectBooks() throws SQLException, JsonProcessingException {
+        BookDto[] books = BookRepository.selectBooks().toArray(new BookDto[0]);
+        return new SelectBooksResponse(books).create();
+    }
+
+    private String selectUser(SelectUserRequest selectUserRequest) throws SQLException, NotFoundException, JsonProcessingException {
+        UserDto user = UserRepository.selectUserById(selectUserRequest.id.getId());
+        return new SelectUserResponse(user).create();
+    }
+
+    private String selectUserForLogin(SelectUserForLoginRequest selectUserRequest) throws SQLException, NotFoundException, JsonProcessingException {
+        UserDto user = UserRepository.selectUserForLogin(selectUserRequest.loginData);
+        // TODO: should return sth other than SelectUserResponse
+        return new SelectUserResponse(user).create();
+    }
+
+    private String selectUsers() throws SQLException, NotFoundException, JsonProcessingException {
+        UserDto[] users = UserRepository.selectUsers().toArray(new UserDto[0]);
+        return new SelectUsersResponse(users).create();
+    }
+
+    private String deleteBook(DeleteBookRequest deleteBookRequest) throws SQLException, NotFoundException {
+        BookRepository.deleteBook(deleteBookRequest.id.getId());
+        return new OkResponse().create();
     }
 }
