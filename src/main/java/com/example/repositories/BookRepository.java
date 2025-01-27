@@ -26,26 +26,6 @@ public class BookRepository {
         stmt.executeUpdate();
     }
 
-    public static void updateBook(BookDto book) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
-        String updateBook = """
-                UPDATE books
-                    SET title = ?, author = ?, price = ?
-                    WHERE id = ?;
-                """;
-
-        PreparedStatement stmt = connection.prepareStatement(updateBook);
-        stmt.setString(1, book.title);
-        stmt.setString(2, book.author);
-        stmt.setBigDecimal(3, book.price);
-        stmt.setInt(4, book.id);
-        int rowsAffected = stmt.executeUpdate();
-
-        if (rowsAffected < 1)
-            throw new NotFoundException();
-    }
-
     public static BookDto selectBookById(int id) throws SQLException, NotFoundException {
         Connection connection = DbConnection.getConnection();
 
@@ -140,6 +120,26 @@ public class BookRepository {
         int affectedRows = stmt.executeUpdate();
 
         if (affectedRows < 1)
+            throw new NotFoundException();
+    }
+
+    public static void updateBook(BookDto book) throws SQLException, NotFoundException {
+        Connection connection = DbConnection.getConnection();
+
+        String updateBook = """
+                UPDATE books
+                    SET title = ?, author = ?, price = ?
+                    WHERE id = ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(updateBook);
+        stmt.setString(1, book.title);
+        stmt.setString(2, book.author);
+        stmt.setBigDecimal(3, book.price);
+        stmt.setInt(4, book.id);
+        int rowsAffected = stmt.executeUpdate();
+
+        if (rowsAffected < 1)
             throw new NotFoundException();
     }
 }

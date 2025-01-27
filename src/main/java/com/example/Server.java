@@ -70,6 +70,7 @@ public class Server {
                 case SelectUsers -> { return selectUsers(); }
                 case SelectRoles -> { return selectRoles(); }
                 case UpdateBook -> { return updateBook(new UpdateBookRequest(content)); }
+                case UpdateUser -> { return updateUser(new UpdateUserRequest(content)); }
                 default -> { return new ErrorResponse(new StringDto("Invalid Request")).create(); }
             }
         } catch (NotFoundException e) {
@@ -163,6 +164,11 @@ public class Server {
 
     private String updateBook(UpdateBookRequest updateBookRequest) throws SQLException, NotFoundException {
         BookRepository.updateBook(updateBookRequest.book);
+        return new OkResponse().create();
+    }
+
+    private String updateUser(UpdateUserRequest updateUserRequest) throws SQLException, NotFoundException {
+        UserRepository.updateUser(updateUserRequest.user);
         return new OkResponse().create();
     }
 }

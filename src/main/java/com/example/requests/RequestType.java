@@ -18,6 +18,7 @@ public enum RequestType {
     SelectUsers,
     SelectRoles,
     UpdateBook,
+    UpdateUser,
     Invalid;
 
     public static RequestType fromRequestHeader(String header) {
@@ -39,6 +40,7 @@ public enum RequestType {
             case "SelectUsers" -> { return RequestType.SelectUsers; }
             case "SelectRoles" -> { return RequestType.SelectRoles; }
             case "UpdateBook" -> { return RequestType.UpdateBook; }
+            case "UpdateUser" -> { return RequestType.UpdateUser; }
             default -> { return RequestType.Invalid; }
         }
     }
@@ -62,6 +64,7 @@ public enum RequestType {
             case SelectUsers -> { return "SelectUsers"; }
             case SelectRoles -> { return "SelectRoles"; }
             case UpdateBook -> { return "UpdateBook"; }
+            case UpdateUser -> { return "UpdateUser"; }
             default -> { return "Invalid"; }
         }
     }

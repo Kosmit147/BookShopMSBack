@@ -9,7 +9,7 @@ public class BookOrderInfo {
 
     @JsonCreator
     public BookOrderInfo(@JsonProperty("quantity") int quantity,
-                      @JsonProperty("id") int id) {
+                         @JsonProperty("id") int id) {
         this.quantity = quantity;
         this.id = id;
     }

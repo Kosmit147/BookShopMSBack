@@ -2,11 +2,9 @@ package com.example.repositories;
 
 import com.example.DbConnection;
 import com.example.NotFoundException;
-import com.example.dto.NewUserDto;
-import com.example.dto.NewUserWithRoleDto;
-import com.example.dto.UserDto;
-import com.example.dto.UserLoginDto;
+import com.example.dto.*;
 
+import javax.management.relation.Role;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -136,6 +134,28 @@ public class UserRepository {
         int affectedRows = stmt.executeUpdate();
 
         if (affectedRows < 1)
+            throw new NotFoundException();
+    }
+
+    public static void updateUser(UserDto user) throws SQLException, NotFoundException {
+        Connection connection = DbConnection.getConnection();
+
+        int roleId = RoleRepository.selectRoleIdByName(user.role);
+
+        String updateUser = """
+                UPDATE users
+                    SET name = ?, email = ?, password = ?, role_id = ?
+                    WHERE id = ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(updateUser);
+        stmt.setString(1, user.name);
+        stmt.setString(2, user.email);
+        stmt.setString(3, user.password);
+        stmt.setInt(4, roleId);
+        int rowsAffected = stmt.executeUpdate();
+
+        if (rowsAffected < 1)
             throw new NotFoundException();
     }
 }
