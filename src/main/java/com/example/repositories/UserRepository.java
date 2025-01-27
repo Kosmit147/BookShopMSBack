@@ -110,18 +110,19 @@ public class UserRepository {
         return result;
     }
 
-    public static int selectUserIdByEmail(String userEmail) throws SQLException {
-        Connection connection = DbConnection.getConnection();
+    // TODO: delete or reimplement
+    // public static int selectUserIdByEmail(String userEmail) throws SQLException {
+    //     Connection connection = DbConnection.getConnection();
 
-        String selectUserId = """
-                SELECT id FROM users WHERE email == ?;
-                """;
+    //     String selectUserId = """
+    //             SELECT id FROM users WHERE email == ?;
+    //             """;
 
-        PreparedStatement stmt = connection.prepareStatement(selectUserId);
-        stmt.setString(1, userEmail);
-        ResultSet rs = stmt.executeQuery();
-        return rs.getInt("id");
-    }
+    //     PreparedStatement stmt = connection.prepareStatement(selectUserId);
+    //     stmt.setString(1, userEmail);
+    //     ResultSet rs = stmt.executeQuery();
+    //     return rs.getInt("id");
+    // }
 
     public static void deleteUser(int userId) throws SQLException, NotFoundException {
         Connection connection = DbConnection.getConnection();

@@ -9,6 +9,7 @@ public enum RequestType {
     UpdateBook,
     SelectBook,
     SelectBooks,
+    SelectOrders,
     SelectUser,
     SelectUserForLogin,
     SelectUsers,
@@ -27,6 +28,7 @@ public enum RequestType {
             case "UpdateBook" -> { return RequestType.UpdateBook; }
             case "SelectBook" -> { return RequestType.SelectBook; }
             case "SelectBooks" -> { return RequestType.SelectBooks; }
+            case "SelectOrders" -> { return RequestType.SelectOrders; }
             case "SelectUser" -> { return RequestType.SelectUser; }
             case "SelectUserForLogin" -> { return RequestType.SelectUserForLogin; }
             case "SelectUsers" -> { return RequestType.SelectUsers; }
@@ -47,6 +49,7 @@ public enum RequestType {
             case UpdateBook -> { return "UpdateBook"; }
             case SelectBook -> { return "SelectBook"; }
             case SelectBooks -> { return "SelectBooks"; }
+            case SelectOrders -> { return "SelectOrders"; }
             case SelectUser -> { return "SelectUser"; }
             case SelectUserForLogin -> { return "SelectUserForLogin"; }
             case SelectUsers -> { return "SelectUsers"; }
