@@ -10,6 +10,7 @@ public class NewOrderDto {
     public String city;
     public String zip;
     public String date;
+    public String status;
     public int userId;
     public BookOrderInfo[] books;
 
@@ -20,6 +21,7 @@ public class NewOrderDto {
                        @JsonProperty("city") String city,
                        @JsonProperty("zip") String zip,
                        @JsonProperty("date") String date,
+                       @JsonProperty("status") String status,
                        @JsonProperty("userId") int userId,
                        @JsonProperty("books") BookOrderInfo[] books) {
         this.firstName = firstName;
@@ -28,6 +30,7 @@ public class NewOrderDto {
         this.city = city;
         this.zip = zip;
         this.date = date;
+        this.status = status;
         this.userId = userId;
         this.books = books;
     }
@@ -94,5 +97,13 @@ public class NewOrderDto {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

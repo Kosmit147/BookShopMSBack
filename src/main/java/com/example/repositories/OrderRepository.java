@@ -11,7 +11,7 @@ public class OrderRepository {
         Connection connection = DbConnection.getConnection();
 
         String addOrder = """
-                INSERT INTO orders(first_name, last_name, street, city, zip, date, user_id) VALUES(?, ?, ?, ?, ?, ?, ?);
+                INSERT INTO orders(first_name, last_name, street, city, zip, date, status, user_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?);
                 """;
 
         PreparedStatement stmt = connection.prepareStatement(addOrder, Statement.RETURN_GENERATED_KEYS);
@@ -22,7 +22,8 @@ public class OrderRepository {
         stmt.setString(4, order.city);
         stmt.setString(5, order.zip);
         stmt.setString(6, order.date);
-        stmt.setInt(7, order.userId);
+        stmt.setString(7, order.status);
+        stmt.setInt(8, order.userId);
 
         int affectedRows = stmt.executeUpdate();
 
@@ -39,12 +40,11 @@ public class OrderRepository {
             addBookToOrder(bookInfo.quantity, bookInfo.id, orderId);
     }
 
-    // TODO: should this function be part of OrderRepository?
     private static void addBookToOrder(int quantity, int bookId, int orderId) throws SQLException {
         Connection connection = DbConnection.getConnection();
 
         String addBook = """
-                INSERT INTO books_orders(quantity, book_id, order_id) VALUES(?, ?, ?);
+                INSERT OR REPLACE INTO books_orders(quantity, book_id, order_id) VALUES(?, ?, ?);
                 """;
 
         PreparedStatement stmt = connection.prepareStatement(addBook);
@@ -55,5 +55,4 @@ public class OrderRepository {
 
         stmt.executeUpdate();
     }
-
 }

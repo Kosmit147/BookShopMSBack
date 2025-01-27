@@ -121,6 +121,7 @@ public class DbConnection {
                     city TEXT NOT NULL,
                     zip TEXT NOT NULL,
                     date TEXT NOT NULL,
+                    status TEXT NOT NULL,
                     user_id INTEGER NOT NULL,
                 
                     FOREIGN KEY (user_id) REFERENCES users(id)
