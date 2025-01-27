@@ -13,4 +13,20 @@ public class BookOrderDetailsDto {
         this.quantity = quantity;
         this.book = book;
     }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public BookDto getBook() {
+        return book;
+    }
+
+    public void setBook(BookDto book) {
+        this.book = book;
+    }
 }
