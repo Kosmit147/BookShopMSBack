@@ -2,27 +2,44 @@ package com.example.repositories;
 
 import com.example.DbConnection;
 import com.example.NotFoundException;
+import com.example.dto.RoleDto;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class RoleRepository {
+    public static ArrayList<RoleDto> selectRoles() throws SQLException {
+        Connection connection = DbConnection.getConnection();
+
+        String selectRoles = """
+                SELECT * FROM roles;
+                """;
+
+        Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery(selectRoles);
+
+        ArrayList<RoleDto> result = new ArrayList<>();
+
+        while (rs.next()) {
+            result.add(new RoleDto(rs.getInt("id"), rs.getString("name")));
+        }
+
+        return result;
+    }
+
     public static String selectRoleNameById(int roleId) throws SQLException, NotFoundException {
         Connection connection = DbConnection.getConnection();
 
-        String selectUser = """
+        String selectRoleName = """
                 SELECT name FROM roles WHERE id = ?;
                 """;
 
-        PreparedStatement stmt = connection.prepareStatement(selectUser);
+        PreparedStatement stmt = connection.prepareStatement(selectRoleName);
         stmt.setInt(1, roleId);
         ResultSet rs = stmt.executeQuery();
 
         if (rs.next()) {
-            String name = rs.getString("name");
-            return name;
+            return rs.getString("name");
         }
 
         throw new NotFoundException();

@@ -11,6 +11,7 @@ public enum RequestType {
     SelectUser,
     SelectUserForLogin,
     SelectUsers,
+    SelectRoles,
     DeleteBook,
     Invalid;
 
@@ -26,6 +27,7 @@ public enum RequestType {
             case "SelectUser" -> { return RequestType.SelectUser; }
             case "SelectUserForLogin" -> { return RequestType.SelectUserForLogin; }
             case "SelectUsers" -> { return RequestType.SelectUsers; }
+            case "SelectRoles" -> { return RequestType.SelectRoles; }
             case "DeleteBook" -> { return RequestType.DeleteBook; }
             default -> { return RequestType.Invalid; }
         }
@@ -43,6 +45,7 @@ public enum RequestType {
             case SelectUser -> { return "SelectUser"; }
             case SelectUserForLogin -> { return "SelectUserForLogin"; }
             case SelectUsers -> { return "SelectUsers"; }
+            case SelectRoles -> { return "SelectRoles"; }
             case DeleteBook -> { return "DeleteBook"; }
             default -> { return "Invalid"; }
         }

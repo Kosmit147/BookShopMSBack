@@ -3,6 +3,7 @@ package com.example;
 import com.example.dto.*;
 import com.example.repositories.BookRepository;
 import com.example.repositories.OrderRepository;
+import com.example.repositories.RoleRepository;
 import com.example.repositories.UserRepository;
 import com.example.requests.*;
 import com.example.responses.*;
@@ -62,6 +63,7 @@ public class Server {
                 case SelectUser -> { return selectUser(new SelectUserRequest(content)); }
                 case SelectUserForLogin -> { return selectUserForLogin(new SelectUserForLoginRequest(content)); }
                 case SelectUsers -> { return selectUsers(); }
+                case SelectRoles -> { return selectRoles(); }
                 case DeleteBook -> { return deleteBook(new DeleteBookRequest(content)); }
                 default -> { return new ErrorResponse(new StringDto("Invalid Request")).create(); }
             }
@@ -121,6 +123,11 @@ public class Server {
     private String selectUsers() throws SQLException, NotFoundException, JsonProcessingException {
         UserDto[] users = UserRepository.selectUsers().toArray(new UserDto[0]);
         return new SelectUsersResponse(users).create();
+    }
+
+    private String selectRoles() throws SQLException, NotFoundException, JsonProcessingException {
+        RoleDto[] roles = RoleRepository.selectRoles().toArray(new RoleDto[0]);
+        return new SelectRolesResponse(roles).create();
     }
 
     private String deleteBook(DeleteBookRequest deleteBookRequest) throws SQLException, NotFoundException {
