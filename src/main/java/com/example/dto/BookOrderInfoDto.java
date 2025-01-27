@@ -3,12 +3,12 @@ package com.example.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class BookOrderInfo {
+public class BookOrderInfoDto {
     public int quantity;
     public int id;
 
     @JsonCreator
-    public BookOrderInfo(@JsonProperty("quantity") int quantity,
+    public BookOrderInfoDto(@JsonProperty("quantity") int quantity,
                          @JsonProperty("id") int id) {
         this.quantity = quantity;
         this.id = id;

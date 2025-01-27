@@ -38,7 +38,7 @@ public class OrderRepository {
         if (generatedKeys.next())
             orderId = generatedKeys.getInt(1);
 
-        for (BookOrderInfo bookInfo : order.books)
+        for (BookOrderInfoDto bookInfo : order.books)
             addBookToOrder(bookInfo.quantity, bookInfo.id, orderId);
     }
 
@@ -105,6 +105,30 @@ public class OrderRepository {
         return result;
     }
 
+    public static ArrayList<BookOrderDetailsDto> selectBooksForOrder(int orderId) throws SQLException, NotFoundException {
+        Connection connection = DbConnection.getConnection();
+
+        String selectBooksOrders = """
+                SELECT quantity, book_id FROM books_orders WHERE order_id = ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(selectBooksOrders);
+        stmt.setInt(1, orderId);
+        ResultSet rs = stmt.executeQuery();
+
+        ArrayList<BookOrderDetailsDto> result = new ArrayList<>();
+
+        while (rs.next()) {
+            int quantity = rs.getInt("quantity");
+            int bookId = rs.getInt("book_id");
+
+            BookDto book = BookRepository.selectBookById(bookId);
+            result.add(new BookOrderDetailsDto(quantity, book));
+        }
+
+        return result;
+    }
+
     public static ArrayList<OrderDto> selectOrdersForUser(int userId) throws SQLException {
         Connection connection = DbConnection.getConnection();
 
@@ -114,7 +138,7 @@ public class OrderRepository {
 
         PreparedStatement stmt = connection.prepareStatement(selectOrders);
         stmt.setInt(1, userId);
-        ResultSet rs = stmt.executeQuery(selectOrders);
+        ResultSet rs = stmt.executeQuery();
 
         ArrayList<OrderDto> result = new ArrayList<>();
 

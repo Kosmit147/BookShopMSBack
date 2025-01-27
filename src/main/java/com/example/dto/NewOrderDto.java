@@ -11,7 +11,7 @@ public class NewOrderDto {
     public String zip;
     public String date;
     public int userId;
-    public BookOrderInfo[] books;
+    public BookOrderInfoDto[] books;
 
     @JsonCreator
     public NewOrderDto(@JsonProperty("firstName") String firstName,
@@ -21,7 +21,7 @@ public class NewOrderDto {
                        @JsonProperty("zip") String zip,
                        @JsonProperty("date") String date,
                        @JsonProperty("userId") int userId,
-                       @JsonProperty("books") BookOrderInfo[] books) {
+                       @JsonProperty("books") BookOrderInfoDto[] books) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.street = street;
@@ -64,11 +64,11 @@ public class NewOrderDto {
         this.userId = userId;
     }
 
-    public BookOrderInfo[] getBooks() {
+    public BookOrderInfoDto[] getBooks() {
         return books;
     }
 
-    public void setBooks(BookOrderInfo[] books) {
+    public void setBooks(BookOrderInfoDto[] books) {
         this.books = books;
     }
 

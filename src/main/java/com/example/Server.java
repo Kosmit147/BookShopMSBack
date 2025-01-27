@@ -63,6 +63,7 @@ public class Server {
                 case DeleteUser -> { return deleteUser(new DeleteUserRequest(content)); }
                 case SelectBook -> { return selectBook(new SelectBookRequest(content)); }
                 case SelectBooks -> { return selectBooks(); }
+                case SelectBooksForOrder -> { return selectBooksForOrder(new SelectBooksForOrderRequest(content)); }
                 case SelectOrders -> { return selectOrders(); }
                 case SelectOrdersForUser -> { return selectOrdersForUser(new SelectOrdersForUserRequest(content)); }
                 case SelectUser -> { return selectUser(new SelectUserRequest(content)); }
@@ -128,6 +129,11 @@ public class Server {
     private String selectBooks() throws SQLException, JsonProcessingException {
         BookDto[] books = BookRepository.selectBooks().toArray(new BookDto[0]);
         return new SelectBooksResponse(books).create();
+    }
+
+    private String selectBooksForOrder(SelectBooksForOrderRequest selectBooksForOrderRequest) throws SQLException, JsonProcessingException, NotFoundException {
+        BookOrderDetailsDto[] books = OrderRepository.selectBooksForOrder(selectBooksForOrderRequest.orderId.getId()).toArray(new BookOrderDetailsDto[0]);
+        return new SelectBooksForOrderResponse(books).create();
     }
 
     private String selectOrders() throws SQLException, JsonProcessingException {
