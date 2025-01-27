@@ -36,7 +36,7 @@ public class OrderRepository {
         ResultSet generatedKeys = stmt.getGeneratedKeys();
 
         if (generatedKeys.next())
-            orderId = generatedKeys.getInt("id");
+            orderId = generatedKeys.getInt(1);
 
         for (BookOrderInfo bookInfo : order.books)
             addBookToOrder(bookInfo.quantity, bookInfo.id, orderId);
