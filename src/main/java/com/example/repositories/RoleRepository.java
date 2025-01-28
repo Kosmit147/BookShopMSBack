@@ -50,7 +50,7 @@ public class RoleRepository {
         Connection connection = DbConnection.getConnection();
 
         String selectRoleId = """
-                SELECT id FROM roles WHERE name == ?;
+                SELECT id FROM roles WHERE name = ?;
                 """;
 
         PreparedStatement stmt = connection.prepareStatement(selectRoleId);
