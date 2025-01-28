@@ -1,5 +1,6 @@
 package com.example.dto;
 
+import com.example.repositories.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -11,7 +12,7 @@ public class OrderDto {
     public String city;
     public String zip;
     public String date;
-    public String status;
+    public OrderStatus status;
     public int userId;
 
     @JsonCreator
@@ -22,7 +23,7 @@ public class OrderDto {
                     @JsonProperty("city") String city,
                     @JsonProperty("zip") String zip,
                     @JsonProperty("date") String date,
-                    @JsonProperty("status") String status,
+                    @JsonProperty("status") OrderStatus status,
                     @JsonProperty("userId") int userId) {
         this.id = id;
         this.firstName = firstName;
@@ -91,11 +92,11 @@ public class OrderDto {
         this.lastName = lastName;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 

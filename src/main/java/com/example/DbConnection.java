@@ -71,6 +71,15 @@ public class DbConnection {
 
         stmt.execute(createUsers);
 
+        String createOrderStatuses = """
+                CREATE TABLE IF NOT EXISTS order_statuses (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT UNIQUE NOT NULL
+                );
+                """;
+
+        stmt.execute(createOrderStatuses);
+
         String createOrders = """
                 CREATE TABLE IF NOT EXISTS orders (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -80,8 +89,12 @@ public class DbConnection {
                     city TEXT NOT NULL,
                     zip TEXT NOT NULL,
                     date TEXT NOT NULL,
-                    status TEXT NOT NULL,
+                    status_id INTEGER NOT NULL,
                     user_id INTEGER NOT NULL,
+                
+                    FOREIGN KEY (status_id) REFERENCES order_statuses(id)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
                 
                     FOREIGN KEY (user_id) REFERENCES users(id)
                     ON DELETE CASCADE

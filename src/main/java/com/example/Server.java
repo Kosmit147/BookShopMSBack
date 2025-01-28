@@ -86,7 +86,7 @@ public class Server {
         return new OkResponse().create();
     }
 
-    private String addOrder(AddOrderRequest addOrderRequest) throws SQLException {
+    private String addOrder(AddOrderRequest addOrderRequest) throws SQLException, NotFoundException {
         OrderRepository.addOrder(addOrderRequest.order);
         return new OkResponse().create();
     }
@@ -136,12 +136,12 @@ public class Server {
         return new SelectBooksForOrderResponse(books).create();
     }
 
-    private String selectOrders() throws SQLException, JsonProcessingException {
+    private String selectOrders() throws SQLException, JsonProcessingException, NotFoundException {
         OrderDto[] orders = OrderRepository.selectOrders().toArray(new OrderDto[0]);
         return new SelectOrdersResponse(orders).create();
     }
 
-    private String selectOrdersForUser(SelectOrdersForUserRequest selectOrdersForUserRequest) throws SQLException, JsonProcessingException {
+    private String selectOrdersForUser(SelectOrdersForUserRequest selectOrdersForUserRequest) throws SQLException, JsonProcessingException, NotFoundException {
         OrderDto[] orders = OrderRepository.selectOrdersForUser(selectOrdersForUserRequest.userId.getId()).toArray(new OrderDto[0]);
         // TODO: return sth other than selectOrdersResponse
         return new SelectOrdersResponse(orders).create();
