@@ -1,6 +1,5 @@
 package com.example.dto;
 
-import com.example.repositories.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

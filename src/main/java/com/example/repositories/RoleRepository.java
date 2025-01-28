@@ -2,25 +2,13 @@ package com.example.repositories;
 
 import com.example.DbConnection;
 import com.example.NotFoundException;
-import com.example.dto.NewRoleDto;
+import com.example.dto.Role;
 import com.example.dto.RoleDto;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 public class RoleRepository {
-    public static void addRole(NewRoleDto role) throws SQLException {
-        Connection connection = DbConnection.getConnection();
-
-        String addBook = """
-                INSERT INTO roles(name) VALUES(?);
-                """;
-
-        PreparedStatement stmt = connection.prepareStatement(addBook);
-        stmt.setString(1, role.name);
-        stmt.executeUpdate();
-    }
-
     public static ArrayList<RoleDto> selectRoles() throws SQLException {
         Connection connection = DbConnection.getConnection();
 
@@ -34,13 +22,14 @@ public class RoleRepository {
         ArrayList<RoleDto> result = new ArrayList<>();
 
         while (rs.next()) {
-            result.add(new RoleDto(rs.getInt("id"), rs.getString("name")));
+            Role role = Role.fromString(rs.getString("name"));
+            result.add(new RoleDto(rs.getInt("id"), role));
         }
 
         return result;
     }
 
-    public static String selectRoleNameById(int roleId) throws SQLException, NotFoundException {
+    public static Role selectRoleById(int roleId) throws SQLException, NotFoundException {
         Connection connection = DbConnection.getConnection();
 
         String selectRoleName = """
@@ -52,13 +41,13 @@ public class RoleRepository {
         ResultSet rs = stmt.executeQuery();
 
         if (rs.next()) {
-            return rs.getString("name");
+            return Role.fromString(rs.getString("name"));
         }
 
         throw new NotFoundException();
     }
 
-    public static int selectRoleIdByName(String roleName) throws SQLException {
+    public static int selectRoleId(Role role) throws SQLException, NotFoundException {
         Connection connection = DbConnection.getConnection();
 
         String selectRoleId = """
@@ -66,8 +55,13 @@ public class RoleRepository {
                 """;
 
         PreparedStatement stmt = connection.prepareStatement(selectRoleId);
-        stmt.setString(1, roleName);
+        stmt.setString(1, role.toString());
         ResultSet rs = stmt.executeQuery();
-        return rs.getInt("id");
+
+        if (rs.next()) {
+            return rs.getInt("id");
+        }
+
+        throw new NotFoundException();
     }
 }

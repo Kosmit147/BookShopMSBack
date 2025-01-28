@@ -7,13 +7,13 @@ public class NewUserWithRoleDto {
     public String name;
     public String email;
     public String password;
-    public String role;
+    public Role role;
 
     @JsonCreator
     public NewUserWithRoleDto(@JsonProperty("name") String name,
                               @JsonProperty("email") String email,
                               @JsonProperty("password") String password,
-                              @JsonProperty("role") String role) {
+                              @JsonProperty("role") Role role) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -44,11 +44,11 @@ public class NewUserWithRoleDto {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 }

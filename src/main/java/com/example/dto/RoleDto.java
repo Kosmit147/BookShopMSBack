@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RoleDto {
     public int id;
-    public String name;
+    public Role role;
 
     @JsonCreator
     public RoleDto(@JsonProperty("id") int id,
-                   @JsonProperty("name") String name) {
+                   @JsonProperty("role") Role role) {
         this.id = id;
-        this.name = name;
+        this.role = role;
     }
 
     public int getId() {
@@ -23,11 +23,11 @@ public class RoleDto {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Role getRole() {
+        return role;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

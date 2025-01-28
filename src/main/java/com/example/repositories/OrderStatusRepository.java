@@ -2,6 +2,7 @@ package com.example.repositories;
 
 import com.example.DbConnection;
 import com.example.NotFoundException;
+import com.example.dto.OrderStatus;
 
 import java.sql.*;
 

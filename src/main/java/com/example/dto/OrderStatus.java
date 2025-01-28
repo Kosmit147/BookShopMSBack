@@ -1,4 +1,4 @@
-package com.example.repositories;
+package com.example.dto;
 
 public enum OrderStatus {
     InPreparation,

@@ -4,21 +4,18 @@ import com.example.DbConnection;
 import com.example.NotFoundException;
 import com.example.dto.*;
 
-import javax.management.relation.Role;
 import java.sql.*;
 import java.util.ArrayList;
 
 public class UserRepository {
-    public static void addUser(NewUserDto user) throws SQLException {
-        // TODO: don't hardcode the role string like this
-        String role = "user";
-        addUserWithRole(new NewUserWithRoleDto(user.name, user.email, user.password, role));
+    public static void addUser(NewUserDto user) throws SQLException, NotFoundException {
+        addUserWithRole(new NewUserWithRoleDto(user.name, user.email, user.password, Role.initialUserRole));
     }
 
-    public static void addUserWithRole(NewUserWithRoleDto user) throws SQLException {
+    public static void addUserWithRole(NewUserWithRoleDto user) throws SQLException, NotFoundException {
         Connection connection = DbConnection.getConnection();
 
-        int roleId = RoleRepository.selectRoleIdByName(user.role);
+        int roleId = RoleRepository.selectRoleId(user.role);
 
         String addBook = """
                 INSERT INTO users(name, email, password, role_id) VALUES(?, ?, ?, ?);
@@ -50,9 +47,9 @@ public class UserRepository {
             String name = rs.getString("name");
             String email = rs.getString("email");
             String password = rs.getString("password");
-            String roleName = RoleRepository.selectRoleNameById(rs.getInt("role_id"));
+            Role role = RoleRepository.selectRoleById(rs.getInt("role_id"));
 
-            return new UserDto(userId, name, email, password, roleName);
+            return new UserDto(userId, name, email, password, role);
         }
 
         throw new NotFoundException();
@@ -75,9 +72,9 @@ public class UserRepository {
             String name = rs.getString("name");
             String email = rs.getString("email");
             String password = rs.getString("password");
-            String roleName = RoleRepository.selectRoleNameById(rs.getInt("role_id"));
+            Role role = RoleRepository.selectRoleById(rs.getInt("role_id"));
 
-            return new UserDto(userId, name, email, password, roleName);
+            return new UserDto(userId, name, email, password, role);
         }
 
         throw new NotFoundException();
@@ -100,9 +97,9 @@ public class UserRepository {
             String name = rs.getString("name");
             String email = rs.getString("email");
             String password = rs.getString("password");
-            String roleName = RoleRepository.selectRoleNameById(rs.getInt("role_id"));
+            Role role = RoleRepository.selectRoleById(rs.getInt("role_id"));
 
-            result.add(new UserDto(id, name, email, password, roleName));
+            result.add(new UserDto(id, name, email, password, role));
         }
 
         return result;
@@ -126,7 +123,7 @@ public class UserRepository {
     public static void updateUser(UserDto user) throws SQLException, NotFoundException {
         Connection connection = DbConnection.getConnection();
 
-        int roleId = RoleRepository.selectRoleIdByName(user.role);
+        int roleId = RoleRepository.selectRoleId(user.role);
 
         String updateUser = """
                 UPDATE users
