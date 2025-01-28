@@ -131,6 +131,24 @@ public class OrderRepository {
         return result;
     }
 
+    public static OrderStatus selectStatusForOrder(int orderId) throws SQLException, NotFoundException {
+        Connection connection = DbConnection.getConnection();
+
+        String selectStatusId = """
+                SELECT status_id FROM orders WHERE id = ?;
+                """;
+
+        PreparedStatement stmt = connection.prepareStatement(selectStatusId);
+        stmt.setInt(1, orderId);
+        ResultSet rs = stmt.executeQuery();
+
+        if (!rs.next())
+            throw new NotFoundException();
+
+        int statusId = rs.getInt("status_id");
+        return OrderStatusRepository.selectOrderStatusById(statusId);
+    }
+
     public static ArrayList<OrderDto> selectOrdersForUser(int userId) throws SQLException, NotFoundException {
         Connection connection = DbConnection.getConnection();
 

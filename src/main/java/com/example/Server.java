@@ -65,10 +65,11 @@ public class Server {
                 case SelectBooksForOrder -> { return selectBooksForOrder(new SelectBooksForOrderRequest(content)); }
                 case SelectOrders -> { return selectOrders(); }
                 case SelectOrdersForUser -> { return selectOrdersForUser(new SelectOrdersForUserRequest(content)); }
+                case SelectRoles -> { return selectRoles(); }
+                case SelectStatusForOrder -> { return selectStatusForOrder(new SelectStatusForOrderRequest(content)); }
                 case SelectUser -> { return selectUser(new SelectUserRequest(content)); }
                 case SelectUserForLogin -> { return selectUserForLogin(new SelectUserForLoginRequest(content)); }
                 case SelectUsers -> { return selectUsers(); }
-                case SelectRoles -> { return selectRoles(); }
                 case UpdateBook -> { return updateBook(new UpdateBookRequest(content)); }
                 case UpdateUser -> { return updateUser(new UpdateUserRequest(content)); }
                 default -> { return new ErrorResponse(new StringDto("Invalid Request")).create(); }
@@ -141,6 +142,16 @@ public class Server {
         return new SelectOrdersResponse(orders).create();
     }
 
+    private String selectRoles() throws SQLException, NotFoundException, JsonProcessingException {
+        RoleDto[] roles = RoleRepository.selectRoles().toArray(new RoleDto[0]);
+        return new SelectRolesResponse(roles).create();
+    }
+
+    private String selectStatusForOrder(SelectStatusForOrderRequest selectStatusForOrderRequest) throws SQLException, JsonProcessingException, NotFoundException {
+        OrderStatus status = OrderRepository.selectStatusForOrder(selectStatusForOrderRequest.orderId.getId());
+        return new SelectStatusForOrderResponse(status).create();
+    }
+
     private String selectUser(SelectUserRequest selectUserRequest) throws SQLException, NotFoundException, JsonProcessingException {
         UserDto user = UserRepository.selectUserById(selectUserRequest.id.getId());
         return new SelectUserResponse(user).create();
@@ -155,11 +166,6 @@ public class Server {
     private String selectUsers() throws SQLException, NotFoundException, JsonProcessingException {
         UserDto[] users = UserRepository.selectUsers().toArray(new UserDto[0]);
         return new SelectUsersResponse(users).create();
-    }
-
-    private String selectRoles() throws SQLException, NotFoundException, JsonProcessingException {
-        RoleDto[] roles = RoleRepository.selectRoles().toArray(new RoleDto[0]);
-        return new SelectRolesResponse(roles).create();
     }
 
     private String updateBook(UpdateBookRequest updateBookRequest) throws SQLException, NotFoundException {
