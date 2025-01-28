@@ -5,7 +5,6 @@ public enum RequestType {
     AddOrder,
     AddUser,
     AddUserWithRole,
-    ChangeOrderStatus,
     DeleteBook,
     DeleteUser,
     SelectBook,
@@ -20,6 +19,7 @@ public enum RequestType {
     SelectUserForOrder,
     SelectUsers,
     UpdateBook,
+    UpdateOrderStatus,
     UpdateUser,
     Invalid;
 
@@ -29,7 +29,6 @@ public enum RequestType {
             case "AddOrder" -> { return RequestType.AddOrder; }
             case "AddUser" -> { return RequestType.AddUser; }
             case "AddUserWithRole" -> { return RequestType.AddUserWithRole; }
-            case "ChangeOrderStatus" -> { return RequestType.ChangeOrderStatus; }
             case "DeleteBook" -> { return RequestType.DeleteBook; }
             case "DeleteUser" -> { return RequestType.DeleteUser; }
             case "SelectBook" -> { return RequestType.SelectBook; }
@@ -44,6 +43,7 @@ public enum RequestType {
             case "SelectUserForOrder" -> { return RequestType.SelectUserForOrder; }
             case "SelectUsers" -> { return RequestType.SelectUsers; }
             case "UpdateBook" -> { return RequestType.UpdateBook; }
+            case "UpdateOrderStatus" -> { return RequestType.UpdateOrderStatus; }
             case "UpdateUser" -> { return RequestType.UpdateUser; }
             default -> { return RequestType.Invalid; }
         }
@@ -55,7 +55,6 @@ public enum RequestType {
             case AddOrder -> { return "AddOrder"; }
             case AddUser -> { return "AddUser"; }
             case AddUserWithRole -> { return "AddUserWithRole"; }
-            case ChangeOrderStatus -> { return "ChangeOrderStatus"; }
             case DeleteBook -> { return "DeleteBook"; }
             case DeleteUser -> { return "DeleteUser"; }
             case SelectBook -> { return "SelectBook"; }
@@ -70,6 +69,7 @@ public enum RequestType {
             case SelectUserForOrder -> { return "SelectUserForOrder"; }
             case SelectUsers -> { return "SelectUsers"; }
             case UpdateBook -> { return "UpdateBook"; }
+            case UpdateOrderStatus -> { return "UpdateOrderStatus"; }
             case UpdateUser -> { return "UpdateUser"; }
             default -> { return "Invalid"; }
         }

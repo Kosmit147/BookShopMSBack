@@ -58,7 +58,7 @@ public class OrderRepository {
         stmt.executeUpdate();
     }
 
-    public static void changeOrderStatus(ChangeOrderStatusDto changeOrderStatus) throws SQLException, NotFoundException {
+    public static void updateOrderStatus(UpdateOrderStatusDto updateOrderStatus) throws SQLException, NotFoundException {
         Connection connection = DbConnection.getConnection();
 
         String changeStatus = """
@@ -68,9 +68,9 @@ public class OrderRepository {
                 """;
 
         PreparedStatement stmt = connection.prepareStatement(changeStatus);
-        int statusId = OrderStatusRepository.selectOrderStatusId(changeOrderStatus.newStatus);
+        int statusId = OrderStatusRepository.selectOrderStatusId(updateOrderStatus.newStatus);
         stmt.setInt(1, statusId);
-        stmt.setInt(2, changeOrderStatus.id);
+        stmt.setInt(2, updateOrderStatus.id);
         int rowsAffected = stmt.executeUpdate();
 
         if (rowsAffected < 1)

@@ -57,7 +57,6 @@ public class Server {
                 case AddOrder -> { return addOrder(new AddOrderRequest(content)); }
                 case AddUser -> { return addUser(new AddUserRequest(content)); }
                 case AddUserWithRole -> { return addUserWithRole(new AddUserWithRoleRequest(content)); }
-                case ChangeOrderStatus -> { return changeOrderStatus(new ChangeOrderStatusRequest(content)); }
                 case DeleteBook -> { return deleteBook(new DeleteBookRequest(content)); }
                 case DeleteUser -> { return deleteUser(new DeleteUserRequest(content)); }
                 case SelectBook -> { return selectBook(new SelectBookRequest(content)); }
@@ -72,6 +71,7 @@ public class Server {
                 case SelectUserForOrder -> { return selectUserForOrder(new SelectUserForOrderRequest(content)); }
                 case SelectUsers -> { return selectUsers(); }
                 case UpdateBook -> { return updateBook(new UpdateBookRequest(content)); }
+                case UpdateOrderStatus -> { return updateOrderStatus(new UpdateOrderStatusRequest(content)); }
                 case UpdateUser -> { return updateUser(new UpdateUserRequest(content)); }
                 default -> { return new ErrorResponse(new StringDto("Invalid Request")).create(); }
             }
@@ -99,11 +99,6 @@ public class Server {
 
     private String addUserWithRole(AddUserWithRoleRequest addUserWithRoleRequest) throws SQLException, NotFoundException {
         UserRepository.addUserWithRole(addUserWithRoleRequest.user);
-        return new OkResponse().create();
-    }
-
-    private String changeOrderStatus(ChangeOrderStatusRequest changeOrderStatusRequest) throws SQLException, NotFoundException {
-        OrderRepository.changeOrderStatus(changeOrderStatusRequest.changeOrderStatus);
         return new OkResponse().create();
     }
 
@@ -177,6 +172,11 @@ public class Server {
 
     private String updateBook(UpdateBookRequest updateBookRequest) throws SQLException, NotFoundException {
         BookRepository.updateBook(updateBookRequest.book);
+        return new OkResponse().create();
+    }
+
+    private String updateOrderStatus(UpdateOrderStatusRequest updateOrderStatusRequest) throws SQLException, NotFoundException {
+        OrderRepository.updateOrderStatus(updateOrderStatusRequest.updateOrderStatus);
         return new OkResponse().create();
     }
 

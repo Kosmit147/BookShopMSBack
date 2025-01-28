@@ -2,7 +2,6 @@
 - GetAllOrderStatuses
 
 ### Update
-- UpdateOrderStatus
 - UpdateUserWithRole
 
 init order statuses and roles in the database
