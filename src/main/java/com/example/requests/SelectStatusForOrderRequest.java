@@ -1,19 +1,18 @@
 package com.example.requests;
 
-import com.example.dto.IdDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SelectStatusForOrderRequest {
-    public final IdDto orderId;
+    public final int orderId;
 
-    public SelectStatusForOrderRequest(IdDto orderId) {
+    public SelectStatusForOrderRequest(int orderId) {
         this.orderId = orderId;
     }
 
     public SelectStatusForOrderRequest(String requestContent) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        orderId = objectMapper.readValue(requestContent, IdDto.class);
+        orderId = objectMapper.readValue(requestContent, int.class);
     }
 
     public String create() throws JsonProcessingException {

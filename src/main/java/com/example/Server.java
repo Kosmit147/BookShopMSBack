@@ -69,12 +69,12 @@ public class Server {
                 case UpdateBook -> { return updateBook(new UpdateBookRequest(content)); }
                 case UpdateOrderStatus -> { return updateOrderStatus(new UpdateOrderStatusRequest(content)); }
                 case UpdateUser -> { return updateUser(new UpdateUserRequest(content)); }
-                default -> { return new ErrorResponse(new StringDto("Invalid Request")).create(); }
+                default -> { return new ErrorResponse(new ErrorDto("Invalid Request")).create(); }
             }
         } catch (NotFoundException e) {
             return new NotFoundResponse().create();
         } catch (SQLException | JsonProcessingException e) {
-            return new ErrorResponse(new StringDto(e.toString())).create();
+            return new ErrorResponse(new ErrorDto(e.toString())).create();
         }
     }
 
@@ -99,17 +99,17 @@ public class Server {
     }
 
     private String deleteBook(DeleteBookRequest deleteBookRequest) throws SQLException, NotFoundException {
-        BookRepository.deleteBook(deleteBookRequest.id.getId());
+        BookRepository.deleteBook(deleteBookRequest.id);
         return new OkResponse().create();
     }
 
     private String deleteUser(DeleteUserRequest deleteUserRequest) throws SQLException, NotFoundException {
-        UserRepository.deleteUser(deleteUserRequest.id.getId());
+        UserRepository.deleteUser(deleteUserRequest.id);
         return new OkResponse().create();
     }
 
     private String selectBook(SelectBookRequest selectBookRequest) throws SQLException, NotFoundException, JsonProcessingException {
-        BookDto book = BookRepository.selectBookById(selectBookRequest.id.getId());
+        BookDto book = BookRepository.selectBookById(selectBookRequest.id);
         return new SelectBookResponse(book).create();
     }
 
@@ -119,7 +119,7 @@ public class Server {
     }
 
     private String selectBooksForOrder(SelectBooksForOrderRequest selectBooksForOrderRequest) throws SQLException, JsonProcessingException, NotFoundException {
-        BookOrderDetailsDto[] books = OrderRepository.selectBooksForOrder(selectBooksForOrderRequest.orderId.getId()).toArray(new BookOrderDetailsDto[0]);
+        BookOrderDetailsDto[] books = OrderRepository.selectBooksForOrder(selectBooksForOrderRequest.orderId).toArray(new BookOrderDetailsDto[0]);
         return new SelectBooksForOrderResponse(books).create();
     }
 
@@ -129,18 +129,18 @@ public class Server {
     }
 
     private String selectOrdersForUser(SelectOrdersForUserRequest selectOrdersForUserRequest) throws SQLException, JsonProcessingException, NotFoundException {
-        OrderDto[] orders = OrderRepository.selectOrdersForUser(selectOrdersForUserRequest.userId.getId()).toArray(new OrderDto[0]);
+        OrderDto[] orders = OrderRepository.selectOrdersForUser(selectOrdersForUserRequest.userId).toArray(new OrderDto[0]);
         // TODO: return sth other than selectOrdersResponse
         return new SelectOrdersResponse(orders).create();
     }
 
     private String selectStatusForOrder(SelectStatusForOrderRequest selectStatusForOrderRequest) throws SQLException, JsonProcessingException, NotFoundException {
-        OrderStatus status = OrderRepository.selectStatusForOrder(selectStatusForOrderRequest.orderId.getId());
+        OrderStatus status = OrderRepository.selectStatusForOrder(selectStatusForOrderRequest.orderId);
         return new SelectStatusForOrderResponse(status).create();
     }
 
     private String selectUser(SelectUserRequest selectUserRequest) throws SQLException, NotFoundException, JsonProcessingException {
-        UserDto user = UserRepository.selectUserById(selectUserRequest.id.getId());
+        UserDto user = UserRepository.selectUserById(selectUserRequest.id);
         return new SelectUserResponse(user).create();
     }
 
@@ -151,7 +151,7 @@ public class Server {
     }
 
     private String selectUserForOrder(SelectUserForOrderRequest selectUserForOrderRequest) throws SQLException, NotFoundException, JsonProcessingException {
-        UserDto user = OrderRepository.selectUserForOrder(selectUserForOrderRequest.orderId.getId());
+        UserDto user = OrderRepository.selectUserForOrder(selectUserForOrderRequest.orderId);
         // TODO: return sth other than selectUserResponse
         return new SelectUserResponse(user).create();
     }

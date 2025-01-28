@@ -1,19 +1,18 @@
 package com.example.requests;
 
-import com.example.dto.IdDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DeleteUserRequest {
-    public final IdDto id;
+    public final int id;
 
-    public DeleteUserRequest(IdDto id) {
+    public DeleteUserRequest(int id) {
         this.id = id;
     }
 
     public DeleteUserRequest(String requestContent) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        id = objectMapper.readValue(requestContent, IdDto.class);
+        id = objectMapper.readValue(requestContent, int.class);
     }
 
     public String create() throws JsonProcessingException {
