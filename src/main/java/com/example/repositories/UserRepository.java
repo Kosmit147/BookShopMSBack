@@ -136,6 +136,7 @@ public class UserRepository {
         stmt.setString(2, user.email);
         stmt.setString(3, user.password);
         stmt.setInt(4, roleId);
+        stmt.setInt(5, user.id);
         int rowsAffected = stmt.executeUpdate();
 
         if (rowsAffected < 1)
