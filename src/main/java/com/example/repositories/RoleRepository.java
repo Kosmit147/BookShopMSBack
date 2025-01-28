@@ -7,6 +7,27 @@ import com.example.dto.Role;
 import java.sql.*;
 
 public class RoleRepository {
+    public static void insertRoles() throws SQLException {
+        Connection connection = DbConnection.getConnection();
+
+        String insertIntoRoles = """
+                INSERT INTO roles (name)
+                SELECT 'User'
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM roles WHERE name = 'User'
+                );
+                
+                INSERT INTO roles (name)
+                SELECT 'Admin'
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM roles WHERE name = 'Admin'
+                );
+                """;
+
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate(insertIntoRoles);
+    }
+
     public static Role selectRoleById(int roleId) throws SQLException, NotFoundException {
         Connection connection = DbConnection.getConnection();
 

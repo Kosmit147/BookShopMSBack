@@ -1,5 +1,8 @@
 package com.example;
 
+import com.example.repositories.OrderStatusRepository;
+import com.example.repositories.RoleRepository;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,6 +17,7 @@ public class DbConnection {
             connection = DriverManager.getConnection(url);
             System.out.println("Connected to database.");
             createTables();
+            initRepositories();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -153,5 +157,10 @@ public class DbConnection {
                 """;
 
         stmt.execute(createBooksCarts);
+    }
+
+    private static void initRepositories() throws SQLException {
+        RoleRepository.insertRoles();
+        OrderStatusRepository.insertOrderStatuses();
     }
 }
