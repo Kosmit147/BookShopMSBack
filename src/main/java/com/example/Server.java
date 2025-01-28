@@ -1,10 +1,7 @@
 package com.example;
 
 import com.example.dto.*;
-import com.example.repositories.BookRepository;
-import com.example.repositories.OrderRepository;
-import com.example.repositories.RoleRepository;
-import com.example.repositories.UserRepository;
+import com.example.repositories.*;
 import com.example.requests.*;
 import com.example.responses.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -64,7 +61,6 @@ public class Server {
                 case SelectBooksForOrder -> { return selectBooksForOrder(new SelectBooksForOrderRequest(content)); }
                 case SelectOrders -> { return selectOrders(); }
                 case SelectOrdersForUser -> { return selectOrdersForUser(new SelectOrdersForUserRequest(content)); }
-                case SelectRoles -> { return selectRoles(); }
                 case SelectStatusForOrder -> { return selectStatusForOrder(new SelectStatusForOrderRequest(content)); }
                 case SelectUser -> { return selectUser(new SelectUserRequest(content)); }
                 case SelectUserForLogin -> { return selectUserForLogin(new SelectUserForLoginRequest(content)); }
@@ -136,11 +132,6 @@ public class Server {
         OrderDto[] orders = OrderRepository.selectOrdersForUser(selectOrdersForUserRequest.userId.getId()).toArray(new OrderDto[0]);
         // TODO: return sth other than selectOrdersResponse
         return new SelectOrdersResponse(orders).create();
-    }
-
-    private String selectRoles() throws SQLException, NotFoundException, JsonProcessingException {
-        RoleDto[] roles = RoleRepository.selectRoles().toArray(new RoleDto[0]);
-        return new SelectRolesResponse(roles).create();
     }
 
     private String selectStatusForOrder(SelectStatusForOrderRequest selectStatusForOrderRequest) throws SQLException, JsonProcessingException, NotFoundException {

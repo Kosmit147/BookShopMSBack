@@ -3,32 +3,10 @@ package com.example.repositories;
 import com.example.DbConnection;
 import com.example.NotFoundException;
 import com.example.dto.Role;
-import com.example.dto.RoleDto;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class RoleRepository {
-    public static ArrayList<RoleDto> selectRoles() throws SQLException {
-        Connection connection = DbConnection.getConnection();
-
-        String selectRoles = """
-                SELECT * FROM roles;
-                """;
-
-        Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery(selectRoles);
-
-        ArrayList<RoleDto> result = new ArrayList<>();
-
-        while (rs.next()) {
-            Role role = Role.fromString(rs.getString("name"));
-            result.add(new RoleDto(rs.getInt("id"), role));
-        }
-
-        return result;
-    }
-
     public static Role selectRoleById(int roleId) throws SQLException, NotFoundException {
         Connection connection = DbConnection.getConnection();
 
