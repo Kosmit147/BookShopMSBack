@@ -69,6 +69,7 @@ public class Server {
                 case SelectStatusForOrder -> { return selectStatusForOrder(new SelectStatusForOrderRequest(content)); }
                 case SelectUser -> { return selectUser(new SelectUserRequest(content)); }
                 case SelectUserForLogin -> { return selectUserForLogin(new SelectUserForLoginRequest(content)); }
+                case SelectUserForOrder -> { return selectUserForOrder(new SelectUserForOrderRequest(content)); }
                 case SelectUsers -> { return selectUsers(); }
                 case UpdateBook -> { return updateBook(new UpdateBookRequest(content)); }
                 case UpdateUser -> { return updateUser(new UpdateUserRequest(content)); }
@@ -159,6 +160,12 @@ public class Server {
 
     private String selectUserForLogin(SelectUserForLoginRequest selectUserRequest) throws SQLException, NotFoundException, JsonProcessingException {
         UserDto user = UserRepository.selectUserForLogin(selectUserRequest.loginData);
+        // TODO: return sth other than selectUserResponse
+        return new SelectUserResponse(user).create();
+    }
+
+    private String selectUserForOrder(SelectUserForOrderRequest selectUserForOrderRequest) throws SQLException, NotFoundException, JsonProcessingException {
+        UserDto user = OrderRepository.selectUserForOrder(selectUserForOrderRequest.orderId.getId());
         // TODO: return sth other than selectUserResponse
         return new SelectUserResponse(user).create();
     }

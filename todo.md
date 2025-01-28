@@ -1,6 +1,4 @@
 ### Get
-- GetStatusForOrder
-- GetUserForOrder
 - GetAllOrderStatuses
 
 ### Update
