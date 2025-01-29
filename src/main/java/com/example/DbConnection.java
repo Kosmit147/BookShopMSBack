@@ -2,6 +2,8 @@ package com.example;
 
 import com.example.repositories.OrderStatusRepository;
 import com.example.repositories.RoleRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,13 +11,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DbConnection {
+    private static final Logger logger = LogManager.getLogger(DbConnection.class);
     public static final String url = "jdbc:sqlite:bookshop.db";
     public static final Connection connection;
 
     static {
         try {
             connection = DriverManager.getConnection(url);
-            System.out.println("Connected to database.");
+            logger.info("Connected to database.");
             createTables();
             initRepositories();
         } catch (SQLException e) {
@@ -31,7 +34,7 @@ public class DbConnection {
         try {
             connection.close();
         } catch (SQLException e) {
-            System.out.println(e.toString());
+            logger.error(e.toString());
         }
     }
 

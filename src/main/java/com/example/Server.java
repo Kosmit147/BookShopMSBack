@@ -5,12 +5,15 @@ import com.example.repositories.*;
 import com.example.requests.*;
 import com.example.responses.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.net.*;
 import java.io.*;
 import java.sql.SQLException;
 
 public class Server {
+    private static final Logger logger = LogManager.getLogger(Server.class);
     private ServerSocket serverSocket;
     private Socket clientSocket;
     private PrintWriter out;
@@ -23,10 +26,14 @@ public class Server {
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
         String request;
+        int requestNumber = 0;
 
         while ((request = in.readLine()) != null) {
+            logger.trace("REQUEST {}: {}", requestNumber, request);
             String response = handleRequest(request);
+            logger.trace("RESPONSE {}: {}", requestNumber, response);
             out.println(response);
+            requestNumber++;
         }
     }
 
@@ -38,7 +45,7 @@ public class Server {
             serverSocket.close();
             DbConnection.close();
         } catch (IOException e) {
-            System.out.println(e.toString());
+            logger.error(e.toString());
         }
     }
 

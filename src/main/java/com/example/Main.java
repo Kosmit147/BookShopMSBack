@@ -4,13 +4,17 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Main {
+    private static final Logger logger = LogManager.getLogger(Main.class);
     private static AtomicBoolean running = new AtomicBoolean(true);
     public static final int port = 4200;
 
     public static void main(String[] args) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("Shutting down server...");
+            logger.info("Shutting down server...");
             running.set(false);
         }));
 
@@ -22,7 +26,7 @@ public class Main {
                 Thread.sleep(100);
             }
         } catch (InterruptedException e) {
-            System.out.println(e.toString());
+            logger.error(e.toString());
         }
     }
 
@@ -33,7 +37,7 @@ public class Main {
         try {
             server.start(port);
         } catch (IOException | SQLException e) {
-            System.out.println(e.toString());
+            logger.error(e.toString());
         } finally {
             server.stop();
             running.set(false);
