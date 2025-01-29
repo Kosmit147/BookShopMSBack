@@ -11,7 +11,37 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Handles incoming client requests and processes them by interacting with the
+ * appropriate repositories and data transfer objects (DTOs). It supports a variety of operations
+ * including adding, deleting, updating, and retrieving books, users, and orders.
+ * <p>
+ * This class routes the request to specific methods based on the type of request
+ * (as determined by the request header), and returns a corresponding response.
+ * </p>
+ *
+ * <p>
+ * Each request type is mapped to a repository operation. If an operation is successful,
+ * an appropriate response is generated. If an error or exception occurs, an error response is returned.
+ * </p>
+ *
+ * @author Wojciech Opara
+ * @version 1.0
+ */
 public class RequestHandler {
+
+    /**
+     * Processes an incoming request by routing it to the appropriate handler method.
+     * The request string is split into a header and content, and based on the header,
+     * the appropriate action is taken.
+     * <p>
+     * This method handles various operations such as adding, deleting, selecting, and updating
+     * books, users, and orders by interacting with the corresponding repositories and request/response objects.
+     * </p>
+     *
+     * @param requestStr the incoming request string in the format "header:content".
+     * @return the response as a string, which can be either a success or error message in JSON format.
+     */
     public String processRequest(String requestStr) {
         String[] parts = requestStr.split(":", 2);
 
