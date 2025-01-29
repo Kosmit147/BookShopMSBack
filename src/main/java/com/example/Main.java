@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Main {
     private static AtomicBoolean running = new AtomicBoolean(true);
-    public static final int port = 1666;
+    public static final int port = 4200;
 
     public static void main(String[] args) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
