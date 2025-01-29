@@ -11,10 +11,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Server {
+    public static final int MAX_THREADS = 16;
+
     private static final Logger logger = LogManager.getLogger(Server.class);
     private ServerSocket serverSocket;
-    // TODO: flexible number of threads
-    private final ExecutorService threadPool = Executors.newFixedThreadPool(10);
+    private final ExecutorService threadPool = Executors.newFixedThreadPool(MAX_THREADS);
 
     public void start(int port) throws IOException {
         serverSocket = new ServerSocket(port);
