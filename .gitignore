@@ -43,3 +43,6 @@ bookshop.db
 
 ### Logs ###
 logs/*
+
+### Documentation ###
+docs/*
