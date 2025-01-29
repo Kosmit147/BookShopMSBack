@@ -1,15 +1,12 @@
 package com.example.repositories;
 
-import com.example.DbConnection;
 import com.example.NotFoundException;
 import com.example.dto.Role;
 
 import java.sql.*;
 
 public class RoleRepository {
-    public static void insertRoles() throws SQLException {
-        Connection connection = DbConnection.getConnection();
-
+    public static void insertRoles(Connection connection) throws SQLException {
         String insertIntoRoles = """
                 INSERT INTO roles (name)
                 SELECT 'User'
@@ -28,9 +25,7 @@ public class RoleRepository {
         stmt.executeUpdate(insertIntoRoles);
     }
 
-    public static Role selectRoleById(int roleId) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static Role selectRoleById(Connection connection, int roleId) throws SQLException, NotFoundException {
         String selectRoleName = """
                 SELECT name FROM roles WHERE id = ?;
                 """;
@@ -46,9 +41,7 @@ public class RoleRepository {
         throw new NotFoundException();
     }
 
-    public static int selectRoleId(Role role) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static int selectRoleId(Connection connection, Role role) throws SQLException, NotFoundException {
         String selectRoleId = """
                 SELECT id FROM roles WHERE name = ?;
                 """;

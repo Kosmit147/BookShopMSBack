@@ -13,32 +13,23 @@ import java.sql.Statement;
 public class DbConnection {
     private static final Logger logger = LogManager.getLogger(DbConnection.class);
     public static final String url = "jdbc:sqlite:bookshop.db";
-    public static final Connection connection;
 
-    static {
-        try {
-            connection = DriverManager.getConnection(url);
-            logger.info("Connected to database.");
-            createTables();
-            initRepositories();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(url);
+    }
+
+    public static void close(Connection connection) {
+        if (connection != null)
+        {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                logger.error("Failed to close database connection: {}", e.getMessage());
+            }
         }
     }
 
-    public static Connection getConnection() {
-        return connection;
-    }
-
-    public static void close() {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            logger.error(e.toString());
-        }
-    }
-
-    private static void createTables() throws SQLException {
+    public static void createTables(Connection connection) throws SQLException {
         Statement stmt = connection.createStatement();
         stmt.execute("PRAGMA foreign_keys = ON;");
 
@@ -69,7 +60,7 @@ public class DbConnection {
                     email TEXT UNIQUE NOT NULL,
                     password TEXT NOT NULL,
                     role_id INTEGER NOT NULL,
-                
+    
                     FOREIGN KEY (role_id) REFERENCES roles(id)
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
@@ -98,11 +89,11 @@ public class DbConnection {
                     date TEXT NOT NULL,
                     status_id INTEGER NOT NULL,
                     user_id INTEGER NOT NULL,
-                
+    
                     FOREIGN KEY (status_id) REFERENCES order_statuses(id)
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
-                
+    
                     FOREIGN KEY (user_id) REFERENCES users(id)
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
@@ -117,11 +108,11 @@ public class DbConnection {
                     quantity INTEGER NOT NULL,
                     book_id INTEGER NOT NULL,
                     order_id INTEGER NOT NULL,
-                
+    
                     FOREIGN KEY (book_id) REFERENCES books(id)
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
-                
+    
                     FOREIGN KEY (order_id) REFERENCES orders(id)
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
@@ -134,7 +125,7 @@ public class DbConnection {
                 CREATE TABLE IF NOT EXISTS carts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     user_id INTEGER UNIQUE NOT NULL,
-                
+    
                     FOREIGN KEY (user_id) REFERENCES users(id)
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
@@ -148,11 +139,11 @@ public class DbConnection {
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     book_id INTEGER NOT NULL,
                     cart_id INTEGER NOT NULL,
-                
+    
                     FOREIGN KEY (book_id) REFERENCES books(id)
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
-                
+    
                     FOREIGN KEY (cart_id) REFERENCES carts(id)
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
@@ -162,8 +153,8 @@ public class DbConnection {
         stmt.execute(createBooksCarts);
     }
 
-    private static void initRepositories() throws SQLException {
-        RoleRepository.insertRoles();
-        OrderStatusRepository.insertOrderStatuses();
+    public static void initRepositories(Connection connection) throws SQLException {
+        RoleRepository.insertRoles(connection);
+        OrderStatusRepository.insertOrderStatuses(connection);
     }
 }

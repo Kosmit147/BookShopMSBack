@@ -1,15 +1,12 @@
 package com.example.repositories;
 
-import com.example.DbConnection;
 import com.example.NotFoundException;
 import com.example.dto.OrderStatus;
 
 import java.sql.*;
 
 public class OrderStatusRepository {
-    public static void insertOrderStatuses() throws SQLException {
-        Connection connection = DbConnection.getConnection();
-
+    public static void insertOrderStatuses(Connection connection) throws SQLException {
         String insertIntoOrderStatuses = """
                 INSERT INTO order_statuses (name)
                 SELECT 'InPreparation'
@@ -34,9 +31,7 @@ public class OrderStatusRepository {
         stmt.executeUpdate(insertIntoOrderStatuses);
     }
 
-    public static OrderStatus selectOrderStatusById(int id) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static OrderStatus selectOrderStatusById(Connection connection, int id) throws SQLException, NotFoundException {
         String selectOrderStatus = """
                 SELECT name FROM order_statuses WHERE id = ?;
                 """;
@@ -53,9 +48,7 @@ public class OrderStatusRepository {
         throw new NotFoundException();
     }
 
-    public static int selectOrderStatusId(OrderStatus status) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static int selectOrderStatusId(Connection connection, OrderStatus status) throws SQLException, NotFoundException {
         String selectOrderStatusId = """
                 SELECT id FROM order_statuses WHERE name = ?;
                 """;

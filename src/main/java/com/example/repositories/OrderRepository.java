@@ -1,6 +1,5 @@
 package com.example.repositories;
 
-import com.example.DbConnection;
 import com.example.NotFoundException;
 import com.example.dto.*;
 
@@ -8,9 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class OrderRepository {
-    public static void addOrder(NewOrderDto order) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static void addOrder(Connection connection, NewOrderDto order) throws SQLException, NotFoundException {
         String addOrder = """
                 INSERT INTO orders(first_name, last_name, street, city, zip, date, status_id, user_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?);
                 """;
@@ -23,7 +20,7 @@ public class OrderRepository {
         stmt.setString(4, order.city);
         stmt.setString(5, order.zip);
         stmt.setString(6, order.date);
-        int statusId = OrderStatusRepository.selectOrderStatusId(OrderStatus.initialOrderStatus);
+        int statusId = OrderStatusRepository.selectOrderStatusId(connection, OrderStatus.initialOrderStatus);
         stmt.setInt(7, statusId);
         stmt.setInt(8, order.userId);
 
@@ -39,12 +36,10 @@ public class OrderRepository {
             orderId = generatedKeys.getInt(1);
 
         for (BookOrderInfoDto bookInfo : order.books)
-            addBookToOrder(bookInfo.quantity, bookInfo.id, orderId);
+            addBookToOrder(connection, bookInfo.quantity, bookInfo.id, orderId);
     }
 
-    public static void addBookToOrder(int quantity, int bookId, int orderId) throws SQLException {
-        Connection connection = DbConnection.getConnection();
-
+    public static void addBookToOrder(Connection connection, int quantity, int bookId, int orderId) throws SQLException {
         String addBook = """
                 INSERT OR REPLACE INTO books_orders(quantity, book_id, order_id) VALUES(?, ?, ?);
                 """;
@@ -58,9 +53,7 @@ public class OrderRepository {
         stmt.executeUpdate();
     }
 
-    public static void updateOrderStatus(UpdateOrderStatusDto updateOrderStatus) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static void updateOrderStatus(Connection connection, UpdateOrderStatusDto updateOrderStatus) throws SQLException, NotFoundException {
         String changeStatus = """
                 UPDATE orders
                     SET status_id = ?
@@ -68,7 +61,7 @@ public class OrderRepository {
                 """;
 
         PreparedStatement stmt = connection.prepareStatement(changeStatus);
-        int statusId = OrderStatusRepository.selectOrderStatusId(updateOrderStatus.newStatus);
+        int statusId = OrderStatusRepository.selectOrderStatusId(connection, updateOrderStatus.newStatus);
         stmt.setInt(1, statusId);
         stmt.setInt(2, updateOrderStatus.id);
         int rowsAffected = stmt.executeUpdate();
@@ -77,9 +70,7 @@ public class OrderRepository {
             throw new NotFoundException();
     }
 
-    public static ArrayList<OrderDto> selectOrders() throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static ArrayList<OrderDto> selectOrders(Connection connection) throws SQLException, NotFoundException {
         String selectOrders = """
                 SELECT * FROM orders;
                 """;
@@ -98,7 +89,7 @@ public class OrderRepository {
             String zip = rs.getString("zip");
             String date = rs.getString("date");
             int statusId = rs.getInt("status_id");
-            OrderStatus status = OrderStatusRepository.selectOrderStatusById(statusId);
+            OrderStatus status = OrderStatusRepository.selectOrderStatusById(connection, statusId);
             int userId = rs.getInt("user_id");
 
             result.add(new OrderDto(id, firstName, lastName, street, city, zip, date, status, userId));
@@ -107,9 +98,7 @@ public class OrderRepository {
         return result;
     }
 
-    public static ArrayList<BookOrderDetailsDto> selectBooksForOrder(int orderId) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static ArrayList<BookOrderDetailsDto> selectBooksForOrder(Connection connection, int orderId) throws SQLException, NotFoundException {
         String selectBooksOrders = """
                 SELECT quantity, book_id FROM books_orders WHERE order_id = ?;
                 """;
@@ -124,16 +113,14 @@ public class OrderRepository {
             int quantity = rs.getInt("quantity");
             int bookId = rs.getInt("book_id");
 
-            BookDto book = BookRepository.selectBookById(bookId);
+            BookDto book = BookRepository.selectBookById(connection, bookId);
             result.add(new BookOrderDetailsDto(quantity, book));
         }
 
         return result;
     }
 
-    public static OrderStatus selectStatusForOrder(int orderId) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static OrderStatus selectStatusForOrder(Connection connection, int orderId) throws SQLException, NotFoundException {
         String selectStatusId = """
                 SELECT status_id FROM orders WHERE id = ?;
                 """;
@@ -146,12 +133,10 @@ public class OrderRepository {
             throw new NotFoundException();
 
         int statusId = rs.getInt("status_id");
-        return OrderStatusRepository.selectOrderStatusById(statusId);
+        return OrderStatusRepository.selectOrderStatusById(connection, statusId);
     }
 
-    public static UserDto selectUserForOrder(int orderId) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static UserDto selectUserForOrder(Connection connection, int orderId) throws SQLException, NotFoundException {
         String selectUserId = """
                 SELECT user_id FROM orders WHERE id = ?;
                 """;
@@ -164,12 +149,10 @@ public class OrderRepository {
             throw new NotFoundException();
 
         int userId = rs.getInt("user_id");
-        return UserRepository.selectUserById(userId);
+        return UserRepository.selectUserById(connection, userId);
     }
 
-    public static ArrayList<OrderDto> selectOrdersForUser(int userId) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static ArrayList<OrderDto> selectOrdersForUser(Connection connection, int userId) throws SQLException, NotFoundException {
         String selectOrders = """
                 SELECT * FROM orders WHERE user_id = ?;
                 """;
@@ -189,7 +172,7 @@ public class OrderRepository {
             String zip = rs.getString("zip");
             String date = rs.getString("date");
             int statusId = rs.getInt("status_id");
-            OrderStatus status = OrderStatusRepository.selectOrderStatusById(statusId);
+            OrderStatus status = OrderStatusRepository.selectOrderStatusById(connection, statusId);
 
             result.add(new OrderDto(id, firstName, lastName, street, city, zip, date, status, userId));
         }

@@ -1,6 +1,5 @@
 package com.example.repositories;
 
-import com.example.DbConnection;
 import com.example.NotFoundException;
 import com.example.dto.BookDto;
 import com.example.dto.NewBookDto;
@@ -10,9 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class BookRepository {
-    public static void addBook(NewBookDto book) throws SQLException {
-        Connection connection = DbConnection.getConnection();
-
+    public static void addBook(Connection connection, NewBookDto book) throws SQLException {
         String addBook = """
                 INSERT INTO books(title, author, price) VALUES(?, ?, ?);
                 """;
@@ -26,9 +23,7 @@ public class BookRepository {
         stmt.executeUpdate();
     }
 
-    public static BookDto selectBookById(int id) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static BookDto selectBookById(Connection connection, int id) throws SQLException, NotFoundException {
         String selectBook = """
                 SELECT * FROM books WHERE id = ?;
                 """;
@@ -49,9 +44,7 @@ public class BookRepository {
         throw new NotFoundException();
     }
 
-    public static ArrayList<BookDto> selectBooks() throws SQLException {
-        Connection connection = DbConnection.getConnection();
-
+    public static ArrayList<BookDto> selectBooks(Connection connection) throws SQLException {
         String selectBooks = """
                 SELECT * FROM books;
                 """;
@@ -73,9 +66,7 @@ public class BookRepository {
         return result;
     }
 
-    public static void deleteBook(int bookId) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static void deleteBook(Connection connection, int bookId) throws SQLException, NotFoundException {
         String deleteBook = """
                 DELETE FROM books WHERE id = ?;
                 """;
@@ -88,9 +79,7 @@ public class BookRepository {
             throw new NotFoundException();
     }
 
-    public static void updateBook(BookDto book) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static void updateBook(Connection connection, BookDto book) throws SQLException, NotFoundException {
         String updateBook = """
                 UPDATE books
                     SET title = ?, author = ?, price = ?

@@ -1,7 +1,6 @@
 package com.example;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,6 +12,8 @@ public class Main {
     public static final int port = 4200;
 
     public static void main(String[] args) {
+        // TODO: we don't need to start the server on a separate thread
+
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("Shutting down server...");
             running.set(false);
@@ -36,8 +37,8 @@ public class Main {
 
         try {
             server.start(port);
-        } catch (IOException | SQLException e) {
-            logger.error(e.toString());
+        } catch (IOException e) {
+            logger.error("Error starting server: {}", e.getMessage());
         } finally {
             server.stop();
             running.set(false);

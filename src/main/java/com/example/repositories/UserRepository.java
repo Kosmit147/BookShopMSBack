@@ -1,6 +1,5 @@
 package com.example.repositories;
 
-import com.example.DbConnection;
 import com.example.NotFoundException;
 import com.example.dto.*;
 
@@ -8,14 +7,12 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class UserRepository {
-    public static void addUser(NewUserDto user) throws SQLException, NotFoundException {
-        addUserWithRole(new NewUserWithRoleDto(user.name, user.email, user.password, Role.initialUserRole));
+    public static void addUser(Connection connection, NewUserDto user) throws SQLException, NotFoundException {
+        addUserWithRole(connection, new NewUserWithRoleDto(user.name, user.email, user.password, Role.initialUserRole));
     }
 
-    public static void addUserWithRole(NewUserWithRoleDto user) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
-        int roleId = RoleRepository.selectRoleId(user.role);
+    public static void addUserWithRole(Connection connection, NewUserWithRoleDto user) throws SQLException, NotFoundException {
+        int roleId = RoleRepository.selectRoleId(connection, user.role);
 
         String addBook = """
                 INSERT INTO users(name, email, password, role_id) VALUES(?, ?, ?, ?);
@@ -31,9 +28,7 @@ public class UserRepository {
         stmt.executeUpdate();
     }
 
-    public static UserDto selectUserById(int id) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static UserDto selectUserById(Connection connection, int id) throws SQLException, NotFoundException {
         String selectUser = """
                 SELECT * FROM users WHERE id = ?;
                 """;
@@ -47,7 +42,7 @@ public class UserRepository {
             String name = rs.getString("name");
             String email = rs.getString("email");
             String password = rs.getString("password");
-            Role role = RoleRepository.selectRoleById(rs.getInt("role_id"));
+            Role role = RoleRepository.selectRoleById(connection, rs.getInt("role_id"));
 
             return new UserDto(userId, name, email, password, role);
         }
@@ -55,9 +50,7 @@ public class UserRepository {
         throw new NotFoundException();
     }
 
-    public static UserDto selectUserForLogin(UserLoginDto loginData) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static UserDto selectUserForLogin(Connection connection, UserLoginDto loginData) throws SQLException, NotFoundException {
         String selectUser = """
                 SELECT * FROM users WHERE email = ? AND password = ?;
                 """;
@@ -72,7 +65,7 @@ public class UserRepository {
             String name = rs.getString("name");
             String email = rs.getString("email");
             String password = rs.getString("password");
-            Role role = RoleRepository.selectRoleById(rs.getInt("role_id"));
+            Role role = RoleRepository.selectRoleById(connection, rs.getInt("role_id"));
 
             return new UserDto(userId, name, email, password, role);
         }
@@ -80,9 +73,7 @@ public class UserRepository {
         throw new NotFoundException();
     }
 
-    public static ArrayList<UserDto> selectUsers() throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static ArrayList<UserDto> selectUsers(Connection connection) throws SQLException, NotFoundException {
         String selectUsers = """
                 SELECT * FROM users;
                 """;
@@ -97,7 +88,7 @@ public class UserRepository {
             String name = rs.getString("name");
             String email = rs.getString("email");
             String password = rs.getString("password");
-            Role role = RoleRepository.selectRoleById(rs.getInt("role_id"));
+            Role role = RoleRepository.selectRoleById(connection, rs.getInt("role_id"));
 
             result.add(new UserDto(id, name, email, password, role));
         }
@@ -105,9 +96,7 @@ public class UserRepository {
         return result;
     }
 
-    public static void deleteUser(int userId) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
+    public static void deleteUser(Connection connection, int userId) throws SQLException, NotFoundException {
         String deleteBook = """
                 DELETE FROM users WHERE id = ?;
                 """;
@@ -120,10 +109,8 @@ public class UserRepository {
             throw new NotFoundException();
     }
 
-    public static void updateUser(UserDto user) throws SQLException, NotFoundException {
-        Connection connection = DbConnection.getConnection();
-
-        int roleId = RoleRepository.selectRoleId(user.role);
+    public static void updateUser(Connection connection, UserDto user) throws SQLException, NotFoundException {
+        int roleId = RoleRepository.selectRoleId(connection, user.role);
 
         String updateUser = """
                 UPDATE users
